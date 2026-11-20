@@ -15,7 +15,7 @@ export type SupportLang = "fa" | "en" | "de";
 
 export const SUPPORT_LANGS: { id: SupportLang; native: string; dir: "rtl" | "ltr" }[] = [
   { id: "fa", native: "فارسی", dir: "rtl" },
-  { id: "en", native: "English", dir: "ltr" },
+  { id: "en", native: "English · beta", dir: "ltr" },
   { id: "de", native: "Nur Deutsch", dir: "ltr" },
 ];
 
