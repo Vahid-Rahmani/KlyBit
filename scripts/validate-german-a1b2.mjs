@@ -16,6 +16,10 @@ import {
 import { createCourseState, parseCourseState } from "../lib/content/german-a1b2/types.ts";
 import { auditGermanQuestions } from "./german-question-audit.mjs";
 import { dictationForLesson, practiceForModule, writingTasksForLesson } from "../lib/content/german-a1b2/module-practice.ts";
+import { readFileSync as readQualityFile } from "node:fs";
+// Reviewed removals (content/german-quality/overrides.json) intentionally shrink the bank.
+const removedByQuality = Object.keys(JSON.parse(readQualityFile(new URL("../content/german-quality/overrides.json", import.meta.url), "utf8")).remove ?? {}).length;
+const EXPECTED_QUESTIONS = 1900 - removedByQuality;
 
 const LEVELS = ["A1", "A2", "B1", "B2"];
 const levelRank = new Map(LEVELS.map((level, index) => [level, index]));
@@ -59,7 +63,8 @@ for (const entry of grammarCurriculum) {
 }
 
 assert.equal(Object.keys(B1_TOPIC_MODULE).length, 11, "the B1 topic map must cover eleven topics plus the split Passiv topic");
-assert.equal(legacyB1QuestionMap.size, 1200, `expected 1200 migrated B1 questions, found ${legacyB1QuestionMap.size}`);
+const removedB1 = Object.keys(JSON.parse(readQualityFile(new URL("../content/german-quality/overrides.json", import.meta.url), "utf8")).remove ?? {}).filter((id) => id.startsWith("b1-")).length;
+assert.equal(legacyB1QuestionMap.size, 1200 - removedB1, `expected ${1200 - removedB1} migrated B1 questions, found ${legacyB1QuestionMap.size}`);
 assert.deepEqual(legacyB1QuestionMap.get("q-dativ-c-d1"), { id: "b1-q-dativ-c-d1", moduleId: "dativ" }, "old B1 question IDs must map to their unified question");
 
 const fresh = createCourseState(grammarModuleSpecs, "infinitiv-zu", 5);
@@ -98,7 +103,7 @@ assert.equal(new Set(zuInfinitivQuestions.map((question) => question.id)).size, 
 assert.equal(new Set(zuInfinitivQuestions.map((question) => question.prompt)).size, 100, "prompts must not repeat");
 
 const allQuestions = grammarCurriculum.flatMap((module) => module.questions.map((question) => ({ ...question, moduleId: module.id })));
-assert.equal(allQuestions.length, 1900, `expected 1900 unified questions, found ${allQuestions.length}`);
+assert.equal(allQuestions.length, EXPECTED_QUESTIONS, `expected ${EXPECTED_QUESTIONS} unified questions, found ${allQuestions.length}`);
 assert.equal(new Set(allQuestions.map((question) => question.id)).size, allQuestions.length, "question IDs must be unique across all modules");
 const exactRecords = new Set();
 for (const question of allQuestions) {

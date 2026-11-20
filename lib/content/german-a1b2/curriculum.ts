@@ -173,8 +173,11 @@ export function getCurriculumModule(id: string): CurriculumModule | undefined {
 
 /** Used only to carry old B1 difficult markers into the unified modules. */
 export const legacyB1QuestionMap = new Map<string, { id: string; moduleId: string }>();
-for (const entry of grammarCurriculum) {
-  for (const question of entry.questions) {
-    if (question.id.startsWith("b1-")) legacyB1QuestionMap.set(question.id.slice(3), { id: question.id, moduleId: entry.id });
+for (const [moduleId, questions] of Object.entries(questionsByModule)) {
+  for (const question of questions) {
+    if (!question.id.startsWith("b1-") || quality.remove[question.id]) continue;
+    // Old markers follow a reviewed replacement to its new id.
+    const id = quality.replace[question.id]?.id ?? question.id;
+    legacyB1QuestionMap.set(question.id.slice(3), { id, moduleId });
   }
 }
