@@ -14,6 +14,10 @@ import {
 } from "./german-question-audit.mjs";
 import { grammarCurriculum, grammarModuleSpecs } from "../lib/content/german-a1b2/curriculum.ts";
 import { createCourseState, isGrammarAnswerCorrect, parseCourseState } from "../lib/content/german-a1b2/types.ts";
+import { readFileSync as readQualityFile } from "node:fs";
+// Reviewed removals (content/german-quality/overrides.json) intentionally shrink the bank.
+const removedByQuality = Object.keys(JSON.parse(readQualityFile(new URL("../content/german-quality/overrides.json", import.meta.url), "utf8")).remove ?? {}).length;
+const EXPECTED_QUESTIONS = 1900 - removedByQuality;
 
 const choice = (prompt, options, answer, correctIndex) => ({
   id: "test-choice", level: "A2", difficulty: 1, prompt, translationFa: "ترجمه", options, correctIndex, answer, format: "choice",
@@ -104,11 +108,11 @@ assert.equal(sentenceParsed.modules.dativ.answers[convertedDativ.id], convertedD
 
 // 7. Module coverage: all twenty modules and the complete bank are audited.
 const report = auditGermanQuestions();
-assert.equal(report.inspected, 1900);
+assert.equal(report.inspected, EXPECTED_QUESTIONS);
 assert.equal(report.modules, 20);
 assert.equal(report.errors.length, 0, report.errors.map((error) => `${error.code} ${error.questionId}: ${error.detail}`).join("\n"));
 assert.equal(Object.keys(report.moduleCounts).length, 20);
-assert.equal(Object.values(report.formatCounts).reduce((sum, count) => sum + count, 0), 1900);
+assert.equal(Object.values(report.formatCounts).reduce((sum, count) => sum + count, 0), EXPECTED_QUESTIONS);
 for (const entry of grammarCurriculum) {
   assert.ok((report.moduleCounts[entry.id] ?? 0) >= 32, `${entry.id}: too few audited questions`);
   assert.ok(entry.questions.every((question) => report.formatCounts[question.format ?? "choice"] > 0));

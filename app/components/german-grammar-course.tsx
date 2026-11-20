@@ -15,6 +15,7 @@ import {
   createCourseState, emptyModuleProgress, isGrammarAnswerCorrect, normalizeGrammarAnswer,
   parseCourseState, type GrammarCourseState, type GrammarModuleProgress, type GrammarQuestion,
 } from "@/lib/content/german-a1b2/types";
+import { SUPPORT_LANGS, supportKey, useSupportLanguage, type Support } from "@/lib/content/german-a1b2/support-language";
 
 const STORAGE_KEY = (userId: string) => `klybit-german-a1b2:v1:${userId}`;
 const LEGACY_B1_KEY = (userId: string) => `klybit-german:b1:v1:${userId}`;
@@ -38,11 +39,28 @@ const formatLabels: Record<string, string> = {
 
 const sameText = (left: string, right: string) => normalizeGrammarAnswer(left) === normalizeGrammarAnswer(right);
 
+/** Support-language text first, German original underneath as a subtitle. Without support text only German is shown. */
+function Dual({ de, support, s, className, heading = false }: { de: string; support: string | null; s: Support; className?: string; heading?: boolean }) {
+  const Tag = heading ? "h4" : "p";
+  if (!support) return <Tag className={className} lang="de" dir="ltr">{de}</Tag>;
+  return <div className={`gg-dual${className ? ` ${className}` : ""}`}>
+    <Tag className="gg-dual-main" lang={s.lang} dir={s.dir}>{support}</Tag>
+    <Tag className="gg-dual-sub" lang="de" dir="ltr">{de}</Tag>
+  </div>;
+}
+
+function LanguageSwitch({ s }: { s: Support }) {
+  return <div className="gg-lang-switch" role="group" aria-label={s.ui.languageLabel}>
+    <span className="gg-lang-label">{s.ui.languageLabel}</span>
+    {SUPPORT_LANGS.map((item) => <button key={item.id} type="button" lang={item.id} dir={item.dir} aria-pressed={s.lang === item.id} onClick={() => s.setLang(item.id)}>{item.native}</button>)}
+  </div>;
+}
+
 function Stat({ label, value, note }: { label: string; value: string | number; note?: string }) {
   return <div className="gg-stat"><span>{label}</span><strong>{value}</strong>{note && <small>{note}</small>}</div>;
 }
 
-function FullExplanation({ question, correct, chosen, typed }: { question: GrammarQuestion; correct: boolean; chosen: number | null; typed: string | null }) {
+function FullExplanation({ question, correct, chosen, typed, s }: { question: GrammarQuestion; correct: boolean; chosen: number | null; typed: string | null; s: Support }) {
   const explanation = question.explanation;
   if (!explanation) return null;
   const selectedText = typed ?? (chosen === null ? null : question.options[chosen]);
@@ -51,7 +69,8 @@ function FullExplanation({ question, correct, chosen, typed }: { question: Gramm
       <strong>{correct ? "Richtig." : "Noch nicht."}</strong>
       <span>Lösung: <b lang="de" dir="ltr">{question.answer}</b></span>
     </div>
-    {!correct && selectedText && <p className="gg-chosen" lang="fa" dir="rtl">پاسخ تو: <b lang="de" dir="ltr">{selectedText}</b> — این شکل در این جمله درست نیست.</p>}
+    {!correct && selectedText && <p className="gg-chosen" lang={s.lang} dir={s.dir}>{s.ui.yourAnswer}: <bdi lang="de" dir="ltr">{selectedText}</bdi> — {s.ui.notRight}</p>}
+    {s.text(supportKey.questionExplanation(question.id), explanation.translationFa) && <section className="gg-fa-explanation" lang={s.lang} dir={s.dir}><h4>{s.ui.explanation}</h4><p>{s.text(supportKey.questionExplanation(question.id), explanation.translationFa)}</p></section>}
     <section><h4>Grammatische Regel</h4><p lang="de" dir="ltr">{explanation.rule}</p></section>
     <section><h4>Begründung</h4><p lang="de" dir="ltr">{explanation.reason}</p></section>
     <section><h4>Satzanalyse</h4><p lang="de" dir="ltr">{explanation.analysis}</p></section>
@@ -59,11 +78,10 @@ function FullExplanation({ question, correct, chosen, typed }: { question: Gramm
     <section><h4>Formen und Kasus</h4><p lang="de" dir="ltr">{explanation.forms}</p></section>
     <section className="gg-error"><h4>Fehleranalyse</h4><p lang="de" dir="ltr">{explanation.error}</p></section>
     <section><h4>Zwei neue Beispiele</h4><ul lang="de" dir="ltr">{explanation.examples.map((example) => <li key={example}>{example}</li>)}</ul></section>
-    <section className="gg-fa-explanation" lang="fa" dir="rtl"><h4>توضیح فارسی</h4><p>{explanation.translationFa}</p></section>
   </div>;
 }
 
-function ShortExplanation({ question, correct, chosen, typed }: { question: GrammarQuestion; correct: boolean; chosen: number | null; typed: string | null }) {
+function ShortExplanation({ question, correct, chosen, typed, s }: { question: GrammarQuestion; correct: boolean; chosen: number | null; typed: string | null; s: Support }) {
   const short = question.shortExplanation;
   if (!short) return null;
   const selectedText = typed ?? (chosen === null ? null : question.options[chosen]);
@@ -72,16 +90,15 @@ function ShortExplanation({ question, correct, chosen, typed }: { question: Gram
       <strong>{correct ? "Richtig." : "Noch nicht."}</strong>
       <span>Lösung: <b lang="de" dir="ltr">{question.answer}</b></span>
     </div>
-    {!correct && selectedText && <p className="gg-chosen" lang="fa" dir="rtl">پاسخ تو: <b lang="de" dir="ltr">{selectedText}</b></p>}
-    <section><h4>Kurz erklärt</h4><p lang="de" dir="ltr">{short.de}</p></section>
-    <section className="gg-fa-explanation" lang="fa" dir="rtl"><h4>توضیح فارسی</h4><p>{short.fa}</p></section>
+    {!correct && selectedText && <p className="gg-chosen" lang={s.lang} dir={s.dir}>{s.ui.yourAnswer}: <bdi lang="de" dir="ltr">{selectedText}</bdi></p>}
+    <section className="gg-explain"><h4 lang={s.lang} dir={s.dir}>{s.ui.explanation}</h4><Dual de={short.de} support={s.text(supportKey.questionExplanation(question.id), short.fa)} s={s} /></section>
   </div>;
 }
 
-function Explanation({ question, correct, chosen, typed }: { question: GrammarQuestion; correct: boolean; chosen: number | null; typed: string | null }) {
+function Explanation({ question, correct, chosen, typed, s }: { question: GrammarQuestion; correct: boolean; chosen: number | null; typed: string | null; s: Support }) {
   return question.explanation
-    ? <FullExplanation question={question} correct={correct} chosen={chosen} typed={typed} />
-    : <ShortExplanation question={question} correct={correct} chosen={chosen} typed={typed} />;
+    ? <FullExplanation question={question} correct={correct} chosen={chosen} typed={typed} s={s} />
+    : <ShortExplanation question={question} correct={correct} chosen={chosen} typed={typed} s={s} />;
 }
 
 function mergeLegacyB1Markers(state: GrammarCourseState, userId: string): GrammarCourseState {
@@ -116,6 +133,7 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
   const [serverMode, setServerMode] = useState<"checking" | "server" | "browser">("checking");
   const [saveStatus, setSaveStatus] = useState("Fortschritt wird geladen …");
   const [tab, setTab] = useState<Tab>("learn");
+  const s = useSupportLanguage();
   const [reviewIds, setReviewIds] = useState<string[]>([]);
   const [reviewPos, setReviewPos] = useState(0);
   const [resultFilter, setResultFilter] = useState<ResultFilter>("all");
@@ -384,7 +402,8 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
         <p className="gg-eyebrow">DEIN LERNSTAND · GRAMMATIK A1–B2</p>
         <h2 id="gg-dashboard-title">Ein Kurs. Zwanzig Module.</h2>
         <p className="gg-hero-de">Lerne die Regel, übe sie, schreibe eigene Sätze und höre ein Diktat. Jedes der zwanzig Module hat eine eigene Seite mit demselben Ablauf wie Modul 09.</p>
-        <p className="gg-hero-fa" lang="fa" dir="rtl">یک دوره، بیست ماژول. هر ماژول صفحهٔ مستقل خودش را دارد: درس، تمرین، نوشتن، دیکته و نتیجه. پیشرفتت در حساب و مرورگر ذخیره می‌شود.</p>
+        {s.ui.dashboardIntro && <p className="gg-hero-fa" lang={s.lang} dir={s.dir}>{s.ui.dashboardIntro}</p>}
+        <LanguageSwitch s={s} />
         <div className="gg-hero-actions">
           <a className="gg-primary" href={`/german/grammatik/${lastModule.id}`}>Weiterlernen: {lastModule.title}<ArrowRight size={16} /></a>
           <a className="gg-secondary" href="#module"><LayoutDashboard size={16} />Alle Module</a>
@@ -426,8 +445,8 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
               <span className={`gg-level gg-level-${module.level.slice(0, 2).toLowerCase()}`}>{module.level}</span>
             </div>
             <h3 lang="de" dir="ltr">{module.title}</h3>
-            <p className="gg-dash-fa" lang="fa" dir="rtl">{module.titleFa}</p>
-            <p className="gg-dash-summary" lang="fa" dir="rtl">{module.summaryFa}</p>
+            {s.text(supportKey.moduleTitle(module.id), module.titleFa) && <p className="gg-dash-fa" lang={s.lang} dir={s.dir}>{s.text(supportKey.moduleTitle(module.id), module.titleFa)}</p>}
+            {s.text(supportKey.moduleSummary(module.id), module.summaryFa) && <p className="gg-dash-summary" lang={s.lang} dir={s.dir}>{s.text(supportKey.moduleSummary(module.id), module.summaryFa)}</p>}
             <div className="gg-dash-meta"><span>{ready ? `${module.questions.length} Fragen` : "Noch keine Fragen"}</span><span>{ready ? `${cardAnswered} beantwortet` : "Gesperrt"}</span></div>
             <progress max={100} value={ready ? cardPercent : 0} aria-label={`${module.title}: ${cardPercent}% bearbeitet`} />
             <div className="gg-dash-card-foot"><span>{cardStatus}</span>{ready ? <span>{cardPercent}% <ArrowRight size={13} /></span> : <LockKeyhole size={14} />}</div>
@@ -448,8 +467,8 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
         <a className="gg-back" href="/german/grammatik"><ArrowLeft size={14} />Dashboard</a>
         <p className="gg-eyebrow">GRAMMATIK A1–B2 · MODUL {String(activeModule.number).padStart(2, "0")} VON 20</p>
         <h2 id="gg-course-title">{activeModule.title}</h2>
-        <p className="gg-hero-de" lang="de" dir="ltr">{lesson.introDe}</p>
-        <p className="gg-hero-fa" lang="fa" dir="rtl">{lesson.introFa}</p>
+        <Dual className="gg-hero-dual" de={lesson.introDe} support={s.text(supportKey.lessonIntro(activeModule.id), lesson.introFa)} s={s} />
+        <LanguageSwitch s={s} />
       </div>
       <div className="gg-hero-numbers" aria-label="Modulübersicht">
         <div><strong>{questions.length}</strong><span>Fragen</span></div>
@@ -460,7 +479,7 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
 
     <div className="gg-tabs" role="tablist" aria-label="Modulbereiche">
       {availableTabs.map((item) => <button key={item.id} type="button" role="tab" id={`gg-tab-${item.id}`} aria-selected={tab === item.id} aria-controls="gg-panel" onClick={() => setTab(item.id)}>
-        <span>{item.label}</span><small lang="fa" dir="rtl">{item.fa}</small>
+        <span>{item.label}</span>{s.ui.tabs[item.id] && <small lang={s.lang} dir={s.dir}>{s.ui.tabs[item.id]}</small>}
       </button>)}
     </div>
 
@@ -474,17 +493,17 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
         <p className="gg-module-note">Alle {readyGrammarModules.length} von 20 Modulen sind ausgearbeitet und freigeschaltet.</p>
         {grammarCurriculum.map((module) => <button key={module.id} className="gg-module-item" type="button" disabled={module.status !== "ready"} aria-current={module.id === activeModule.id ? "step" : undefined} onClick={() => openModulePage(module)}>
           <span className="gg-module-number">{String(module.number).padStart(2, "0")}</span>
-          <span className="gg-module-title"><b>{module.title}</b><small lang="fa" dir="rtl">{module.titleFa}</small></span>
+          <span className="gg-module-title"><b>{module.title}</b>{s.text(supportKey.moduleTitle(module.id), module.titleFa) && <small lang={s.lang} dir={s.dir}>{s.text(supportKey.moduleTitle(module.id), module.titleFa)}</small>}</span>
           {module.status === "ready" ? <span className="gg-module-count">{module.questionCount}</span> : <LockKeyhole size={13} />}
         </button>)}
       </aside>
 
       <main id="gg-panel" className="gg-main" role="tabpanel" aria-labelledby={`gg-tab-${tab}`}>
         {tab === "learn" && <section className="gg-lesson">
-          <div className="gg-section-heading"><p className="gg-eyebrow">SCHRITT 1 · VERSTEHEN</p><h3>Die Regel in {lesson.sections.length} Blickwinkeln</h3><p>Lies die deutschen Erklärungen. Die persische Zusammenfassung steht direkt darunter; die Fragen können danach ohne Hilfetext beantwortet werden.</p></div>
+          <div className="gg-section-heading"><p className="gg-eyebrow">SCHRITT 1 · VERSTEHEN</p><h3>Die Regel in {lesson.sections.length} Blickwinkeln</h3><p lang={s.lang === "de" ? "de" : s.lang} dir={s.dir}>{s.ui.lessonHint}</p></div>
           {lesson.sections.map((section, index) => <article key={section.titleDe} className="gg-lesson-card">
             <span className="gg-lesson-index">{String(index + 1).padStart(2, "0")}</span>
-            <div><h4 lang="de" dir="ltr">{section.titleDe}</h4><p lang="de" dir="ltr">{section.bodyDe}</p><p className="gg-fa-copy" lang="fa" dir="rtl">{section.bodyFa}</p><ul lang="de" dir="ltr">{section.examples.map((example, exampleIndex) => <li key={example}>{example}{section.examplesFa?.[exampleIndex] && <span className="gg-example-fa" lang="fa" dir="rtl"> — {section.examplesFa[exampleIndex]}</span>}</li>)}</ul></div>
+            <div><Dual heading de={section.titleDe} support={s.text(supportKey.lessonTitle(activeModule.id, index), section.titleFa)} s={s} /><Dual de={section.bodyDe} support={s.text(supportKey.lessonBody(activeModule.id, index), section.bodyFa)} s={s} /><ul className="gg-examples">{section.examples.map((example, exampleIndex) => { const translated = s.text(supportKey.lessonExample(activeModule.id, index, exampleIndex), section.examplesFa?.[exampleIndex]); return <li key={example}><span lang="de" dir="ltr">{example}</span>{translated && <span className="gg-example-fa" lang={s.lang} dir={s.dir}>{translated}</span>}</li>; })}</ul></div>
           </article>)}
           <div className="gg-callout"><CircleHelp size={18} /><div><strong>So wird bewertet</strong><p>Die Lösung erscheint erst nach deiner Auswahl. Richtig ist nur die Form, die im aktuellen Satz grammatisch und inhaltlich passt. Antworten, schwierige Markierungen und Entwürfe werden im Konto gespeichert; die Erklärung bleibt Teil jeder Frage.</p></div></div>
           <button type="button" className="gg-primary" onClick={() => setTab("practice")}><Sparkles size={16} />Mit Frage 1 beginnen</button>
@@ -498,7 +517,7 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
           <div className="gg-progress-line"><span style={{ width: `${progress}%` }} /></div>
           {reviewing && <div className="gg-review-banner"><Languages size={16} /><span>Wiederholung: {reviewIds.length} falsche oder markierte Fragen.</span><button type="button" onClick={stopReview}><X size={14} />Beenden</button></div>}
           <p className="gg-prompt" lang="de" dir="ltr">{currentQuestion.prompt}</p>
-          <p className="gg-translation" lang="fa" dir="rtl">{currentQuestion.translationFa}</p>
+          {s.text(supportKey.questionTranslation(currentQuestion.id), currentQuestion.translationFa) && <p className="gg-translation" lang={s.lang} dir={s.dir}>{s.text(supportKey.questionTranslation(currentQuestion.id), currentQuestion.translationFa)}</p>}
           <p className="gg-format-note">{formatLabels[currentFormat]} · {currentIsTyped ? (currentFormat === "order" ? "Bilde einen vollständigen Satz." : "Schreibe die fehlende Form.") : "Wähle genau eine Antwort."}</p>
           {currentIsTyped ? <form className="gg-typed-answer" onSubmit={submitTyped}>
             <label htmlFor="gg-typed-input">Deine Antwort auf Deutsch</label>
@@ -518,7 +537,7 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
           </div>}
           {currentIsTyped && currentAnswered && <p className="gg-typed-result" role="status"><strong>{currentCorrect ? "Richtig." : "Noch nicht."}</strong> Richtig ist: <b lang="de" dir="ltr">{currentQuestion.answer}</b></p>}
           {!currentAnswered && <p className="gg-hint">Wähle eine Antwort. Erst danach werden Lösung, deutsche Kurzerklärung und persische Zusammenfassung sichtbar.</p>}
-          {currentAnswered && <Explanation question={currentQuestion} correct={currentCorrect} chosen={currentChoice} typed={typeof currentAnswer === "string" ? currentAnswer : null} />}
+          {currentAnswered && <Explanation question={currentQuestion} correct={currentCorrect} chosen={currentChoice} typed={typeof currentAnswer === "string" ? currentAnswer : null} s={s} />}
           <div className="gg-question-actions">
             <button type="button" onClick={goPrevious} disabled={reviewing ? reviewPos === 0 : currentIndex === 0}><ChevronLeft size={15} />Zurück</button>
             <button type="button" onClick={goNext}>{reviewing && reviewPos + 1 >= reviewIds.length ? "Wiederholung beenden" : "Weiter"}<ChevronRight size={15} /></button>
@@ -531,11 +550,11 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
         {tab === "writing" && <section className="gg-writing">
           <div className="gg-section-heading"><p className="gg-eyebrow">SCHRITT 3 · SCHREIBEN</p><h3>{activeModule.id === "infinitiv-zu" ? "Eigene Sätze mit zu + Infinitiv" : `Eigene Sätze: ${activeModule.title}`}</h3><p>Schreibe zuerst selbst. Die Musterlösung und die Checkliste erscheinen erst auf Knopfdruck; es gibt keine automatische Freitextnote.</p></div>
           {writingTasks.map((task, index) => <article key={task.id} className="gg-writing-card">
-            <div className="gg-writing-head"><span>{String(index + 1).padStart(2, "0")}</span><p lang="fa" dir="rtl">{task.promptFa}</p></div>
+            <div className="gg-writing-head"><span>{String(index + 1).padStart(2, "0")}</span>{(() => { const prompt = s.text(supportKey.writingPrompt(task.id), task.promptFa); return prompt ? <p lang={s.lang} dir={s.dir}>{prompt}</p> : <p lang="fa" dir="rtl">{task.promptFa}</p>; })()}</div>
             <label htmlFor={`gg-write-${task.id}`}>Deine Antwort auf Deutsch</label>
             <textarea id={`gg-write-${task.id}`} lang="de" dir="ltr" value={moduleState.writing[task.id] ?? ""} maxLength={MAX_DRAFT} onChange={(event) => updateWriting(task.id, event.target.value)} rows={3} placeholder="Schreibe deinen Satz …" />
             <div className="gg-writing-actions"><button type="button" onClick={() => setWritingOpen((current) => ({ ...current, [task.id]: !current[task.id] }))}>{writingOpen[task.id] ? "Musterlösung verbergen" : "Musterlösung zeigen"}</button><span>{(moduleState.writing[task.id] ?? "").trim() ? `${(moduleState.writing[task.id] ?? "").trim().split(/\s+/u).length} Wörter` : "Noch kein Entwurf"}</span></div>
-            {writingOpen[task.id] && <div className="gg-model"><p className="gg-model-label">Musterlösung</p><p lang="de" dir="ltr">{task.model}</p><ul lang="fa" dir="rtl">{task.checklist.map((item) => <li key={item}>{item}</li>)}</ul></div>}
+            {writingOpen[task.id] && <div className="gg-model"><p className="gg-model-label">Musterlösung</p><p lang="de" dir="ltr">{task.model}</p><ul lang={s.lang === "en" ? "en" : "fa"} dir={s.lang === "en" ? "ltr" : "rtl"}>{task.checklist.map((item, itemIndex) => <li key={item}>{(s.lang === "en" && s.text(supportKey.writingCheck(task.id, itemIndex))) || item}</li>)}</ul></div>}
           </article>)}
         </section>}
 

@@ -4,6 +4,7 @@ import { grammarModules, zuInfinitivLesson, zuInfinitivQuestions } from "./index
 import { moduleLessons } from "./lessons.ts";
 import { remainingModules } from "./remaining/index.ts";
 import type { GrammarLesson, GrammarModule, GrammarQuestion, GrammarShortExplanation } from "./types.ts";
+import qualityOverrides from "../../../content/german-quality/overrides.json" with { type: "json" };
 
 /**
  * One home for every grammar topic.
@@ -116,8 +117,31 @@ export type CurriculumModule = GrammarModule & {
   questions: GrammarQuestion[];
 };
 
+/**
+ * Reviewed quality changes (content/german-quality/overrides.json).
+ * `remove` drops a question (e.g. a near-duplicate). `replace` swaps a question
+ * for a reviewed version that carries a NEW id, so saved answers of the old
+ * question are never applied to different content.
+ */
+type QualityOverrides = { remove: Record<string, string>; replace: Record<string, GrammarQuestion & { reason?: string }> };
+const quality = qualityOverrides as unknown as QualityOverrides;
+function applyQuality(questions: GrammarQuestion[]): GrammarQuestion[] {
+  return questions.flatMap((question) => {
+    if (quality.remove[question.id]) return [];
+    const replacement = quality.replace[question.id];
+    if (!replacement) return [question];
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- review metadata is not part of the question
+    const { reason, ...next } = replacement;
+    return [next];
+  });
+}
+
+/** Module of every authored question id before quality overrides (used by the overlay validator). */
+export const rawQuestionModule = new Map(Object.entries(questionsByModule).flatMap(([moduleId, questions]) => questions.map((question) => [question.id, moduleId] as const)));
+export const rawQuestionCount = (moduleId: string) => questionsByModule[moduleId]?.length ?? 0;
+
 export const grammarCurriculum: CurriculumModule[] = grammarModules.map((module) => {
-  const questions = questionsByModule[module.id] ?? [];
+  const questions = applyQuality(questionsByModule[module.id] ?? []);
   const lesson = module.id === "infinitiv-zu"
     ? zuInfinitivLesson
     : remainingById.get(module.id)?.lesson ?? moduleLessons[module.id] ?? null;
@@ -149,8 +173,11 @@ export function getCurriculumModule(id: string): CurriculumModule | undefined {
 
 /** Used only to carry old B1 difficult markers into the unified modules. */
 export const legacyB1QuestionMap = new Map<string, { id: string; moduleId: string }>();
-for (const entry of grammarCurriculum) {
-  for (const question of entry.questions) {
-    if (question.id.startsWith("b1-")) legacyB1QuestionMap.set(question.id.slice(3), { id: question.id, moduleId: entry.id });
+for (const [moduleId, questions] of Object.entries(questionsByModule)) {
+  for (const question of questions) {
+    if (!question.id.startsWith("b1-") || quality.remove[question.id]) continue;
+    // Old markers follow a reviewed replacement to its new id.
+    const id = quality.replace[question.id]?.id ?? question.id;
+    legacyB1QuestionMap.set(question.id.slice(3), { id, moduleId });
   }
 }
