@@ -1,9 +1,10 @@
 "use client";
 
+import { GermanNavigation } from "@/app/components/german-navigation";
 import { useEffect, useState, type CSSProperties } from "react";
-import { BookOpen, ArrowLeft, FolderSearch } from "lucide-react";
+
 import { AppBrand, StudyHeader } from "@/app/components/study-header";
-import { SimpleNavigation } from "@/app/components/simple-learning";
+
 import { AccountPanel, AuthPanel } from "@/app/components/learning-views";
 import { copy } from "@/lib/course-data";
 import { GrammarCasesWorkspace } from "@/app/components/grammar-cases-workspace";
@@ -31,12 +32,7 @@ export default function GrammarCasesPage() {
   if (!userId) return <main className="study-app min-h-screen"><div className="auth-required"><AuthPanel onClose={() => undefined} onAuthenticated={setUserId} /></div></main>;
   return <main className="study-app german-app gc-app font-scale-content" style={{ "--wincraft-font-scale": fontScale } as CSSProperties}>
     <div className="app-shell german-shell">
-      <aside className="app-sidebar"><AppBrand subtitle="Learn. Practice. Progress." /><SimpleNavigation active="grammar" items={[
-        { key: "grammar", label: "پرونده‌های گرامر", href: "/german/grammar-cases", icon: <FolderSearch size={18} /> },
-        { key: "german", label: "German for IT", href: "/german", icon: <BookOpen size={18} /> },
-        { key: "network", label: "SatzTat · Network missions", href: "/german/satztat", icon: <ArrowLeft size={18} /> },
-        { key: "home", label: "All learning paths", href: "/", icon: <ArrowLeft size={18} /> },
-      ]} /><div className="german-sidebar-note" lang="fa" dir="rtl"><strong>یک ساختار؛ موقعیت‌های گوناگون</strong><p>بازی شبکه جداست. اینجا ساختن و اصلاح جمله، خودِ بازی است.</p><p>۲۴ مأموریت · ۴ فصل · بدون تایمر اجباری</p></div></aside>
+      <aside className="app-sidebar"><AppBrand subtitle="Learn. Practice. Progress." /><GermanNavigation active="grammar-cases" /><div className="german-sidebar-note" lang="fa" dir="rtl"><strong>یک ساختار؛ موقعیت‌های گوناگون</strong><p>بازی شبکه جداست. اینجا ساختن و اصلاح جمله، خودِ بازی است.</p><p>۲۴ مأموریت · ۴ فصل · بدون تایمر اجباری</p></div></aside>
       <section className="app-content german-content"><StudyHeader title="SatzTat · پرونده‌های گرامر" course="Deutsch" t={copy.fa} fontScale={fontScale} onFontScale={setFontScale} translationLanguage={translation} onTranslationLanguage={setTranslation} onAccount={() => setAccount(true)} /><GrammarCasesWorkspace key={userId} userId={userId} /></section>
     </div>
     {account && <AccountPanel onClose={() => setAccount(false)} onSignOut={async () => {

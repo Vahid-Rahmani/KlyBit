@@ -1,9 +1,9 @@
 "use client";
 
+import { GermanNavigation } from "@/app/components/german-navigation";
 import { useEffect, useState, type CSSProperties } from "react";
-import { ArrowLeft, BookOpen, Network } from "lucide-react";
 import { AppBrand, StudyHeader } from "@/app/components/study-header";
-import { SimpleNavigation } from "@/app/components/simple-learning";
+
 import { AccountPanel, AuthPanel } from "@/app/components/learning-views";
 import { GoogleSubtitleProvider } from "@/app/components/google-translate";
 import { SatztatWorkspace } from "@/app/components/satztat-workspace";
@@ -32,12 +32,7 @@ export default function SatztatPage() {
   if (!userId) return <main className="study-app min-h-screen"><div className="auth-required"><AuthPanel onClose={() => undefined} onAuthenticated={setUserId} /></div></main>;
   return <GoogleSubtitleProvider language={language}><main className="study-app german-app satztat-app font-scale-content" style={{ "--wincraft-font-scale": fontScale } as CSSProperties}>
     <div className="app-shell german-shell">
-      <aside className="app-sidebar"><AppBrand subtitle="Learn. Practice. Progress." /><SimpleNavigation active="satztat" items={[
-        { key: "satztat", label: "SatzTat missions", href: "/german/satztat", icon: <Network size={18} /> },
-        { key: "grammar", label: "SatzTat · پرونده‌های گرامر", href: "/german/grammar-cases", icon: <BookOpen size={18} /> },
-        { key: "german", label: "German lessons", href: "/german", icon: <BookOpen size={18} /> },
-        { key: "home", label: "All learning paths", href: "/", icon: <ArrowLeft size={18} /> },
-      ]} /><div className="german-sidebar-note"><strong>One incident. Two skills.</strong><p>Repair the network. Explain the outcome in German.</p><p>2 playable cases · a focused pilot, not the entire planned campaign.</p></div></aside>
+      <aside className="app-sidebar"><AppBrand subtitle="Learn. Practice. Progress." /><GermanNavigation active="satztat" /><div className="german-sidebar-note"><strong>One incident. Two skills.</strong><p>Repair the network. Explain the outcome in German.</p><p>2 playable cases · a focused pilot, not the entire planned campaign.</p></div></aside>
       <section className="app-content german-content"><StudyHeader title="SatzTat · Network missions" course="Deutsch" t={copy.en} fontScale={fontScale} onFontScale={setFontScale} translationLanguage={language} onTranslationLanguage={setLanguage} onAccount={() => setAccountOpen(true)} /><SatztatWorkspace key={userId} userId={userId} translationLanguage={language} /></section>
     </div>{accountOpen && <AccountPanel onClose={() => setAccountOpen(false)} onSignOut={signOut} />}
   </main></GoogleSubtitleProvider>;

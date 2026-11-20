@@ -1,9 +1,10 @@
 "use client";
 
+import { GermanNavigation } from "@/app/components/german-navigation";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowRight, BookOpen, Check, ChevronRight, Headphones, Languages, RotateCcw, Volume2 } from "lucide-react";
 import { AppBrand, StudyHeader } from "@/app/components/study-header";
-import { SimpleNavigation } from "@/app/components/simple-learning";
+
 import { AccountPanel, AuthPanel } from "@/app/components/learning-views";
 import { GoogleSubtitle, GoogleSubtitleProvider } from "@/app/components/google-translate";
 import { copy } from "@/lib/course-data";
@@ -243,14 +244,7 @@ export default function GermanPage() {
   if (!userId) return <main className="study-app min-h-screen"><div className="auth-required"><AuthPanel onClose={() => undefined} onAuthenticated={setUserId} /></div></main>;
   return <GoogleSubtitleProvider language={language}><main className="study-app german-app font-scale-content" style={{ "--wincraft-font-scale": fontScale } as CSSProperties}>
     <div className="app-shell german-shell">
-      <aside className="app-sidebar"><AppBrand subtitle="Learn. Practice. Progress." /><SimpleNavigation active="german" items={[
-        { key: "german", label: "German for IT", href: "/german", icon: <Languages size={18} /> },
-        { key: "german-grammatik", label: "Grammatik A1–B2 · 20 Module", href: "/german/grammatik", icon: <Languages size={18} /> },
-        { key: "grammar-cases", label: "SatzTat · پرونده‌های گرامر", href: "/german/grammar-cases", icon: <ChevronRight size={18} /> },
-        { key: "satztat", label: "SatzTat · Network missions", href: "/german/satztat", icon: <ChevronRight size={18} /> },
-        { key: "home", label: "Windows Server", href: "/", icon: <BookOpen size={18} /> },
-        { key: "linux", label: "Linux practice", href: "/linux", icon: <ChevronRight size={18} /> },
-      ]} /><div className="german-sidebar-note"><strong>B1 → B2 bridge · IT context</strong><p><GoogleSubtitle text="Remember a pattern. Use it in a new situation. Return when your review is due." /></p><p>{germanLessons.length} lessons · {germanUnits.length} units</p></div></aside>
+      <aside className="app-sidebar"><AppBrand subtitle="Learn. Practice. Progress." /><GermanNavigation active="german" /><div className="german-sidebar-note"><strong>B1 → B2 bridge · IT context</strong><p><GoogleSubtitle text="Remember a pattern. Use it in a new situation. Return when your review is due." /></p><p>{germanLessons.length} lessons · {germanUnits.length} units</p></div></aside>
       <section className="app-content german-content"><StudyHeader title="German for IT" course="Deutsch" t={copy.en} fontScale={fontScale} onFontScale={setFontScale} translationLanguage={language} onTranslationLanguage={setLanguage} onAccount={() => setAccountOpen(true)} /><GermanWorkspace key={userId} userId={userId} /></section>
     </div>{accountOpen && <AccountPanel onClose={() => setAccountOpen(false)} onSignOut={signOut} />}
   </main></GoogleSubtitleProvider>;

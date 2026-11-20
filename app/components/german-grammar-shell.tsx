@@ -1,9 +1,10 @@
 "use client";
 
+import { GermanNavigation } from "@/app/components/german-navigation";
 import { useEffect, useState, type CSSProperties } from "react";
-import { ChevronRight, Languages } from "lucide-react";
+
 import { AppBrand, StudyHeader } from "@/app/components/study-header";
-import { SimpleNavigation } from "@/app/components/simple-learning";
+
 import { AccountPanel, AuthPanel } from "@/app/components/learning-views";
 import { GoogleSubtitleProvider } from "@/app/components/google-translate";
 import { GermanGrammarCourse } from "@/app/components/german-grammar-course";
@@ -46,12 +47,7 @@ export function GermanGrammarShell({ view, moduleId }: GrammarShellProps) {
       <div className="app-shell german-shell">
         <aside className="app-sidebar">
           <AppBrand subtitle="Grammatik A1–B2" />
-          <SimpleNavigation active="german-grammatik" items={[
-            { key: "german-grammatik", label: "Grammatik A1–B2 · 20 Module", href: "/german/grammatik", icon: <Languages size={18} /> },
-            { key: "german", label: "German for IT", href: "/german", icon: <ChevronRight size={18} /> },
-            { key: "grammar-cases", label: "SatzTat · پرونده‌های گرامر", href: "/german/grammar-cases", icon: <ChevronRight size={18} /> },
-            { key: "satztat", label: "SatzTat · Network missions", href: "/german/satztat", icon: <ChevronRight size={18} /> },
-          ]} />
+          <GermanNavigation active="grammatik" />
           <div className="german-sidebar-note">
             <strong>Grammatik A1–B2</strong>
             <p>Ein Lehrwerk mit 20 Modulen. Jedes Modul hat eine eigene Seite mit Lernen, Üben, Schreiben, Diktat und Ergebnissen.</p>
