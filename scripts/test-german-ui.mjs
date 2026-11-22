@@ -8,7 +8,7 @@ import { JSDOM } from "jsdom";
 const scratch = mkdtempSync(path.resolve(".tmp-german-ui-"));
 try {
   const outfile = path.join(scratch, "ui.mjs");
-  await build({ stdin: { contents: 'export { GermanWorkspace } from "./app/german/page.tsx"; export { germanLessons, germanUnits } from "./lib/content/german-learning.ts"; export { compareTypedCharacters } from "./lib/german-learning-engine.ts";', resolveDir: process.cwd(), loader: "tsx" }, outfile, bundle: true, format: "esm", platform: "neutral", target: "es2022", jsx: "automatic", external: ["react", "react/jsx-runtime", "lucide-react"], tsconfig: "tsconfig.json", logLevel: "warning", plugins: [{ name: "translation-fixture", setup(b) {
+  await build({ stdin: { contents: 'export { GermanWorkspace } from "./app/german/it/page.tsx"; export { germanLessons, germanUnits } from "./lib/content/german-learning.ts"; export { compareTypedCharacters } from "./lib/german-learning-engine.ts";', resolveDir: process.cwd(), loader: "tsx" }, outfile, bundle: true, format: "esm", platform: "neutral", target: "es2022", jsx: "automatic", external: ["react", "react/jsx-runtime", "lucide-react"], tsconfig: "tsconfig.json", logLevel: "warning", plugins: [{ name: "translation-fixture", setup(b) {
     b.onResolve({ filter: /google-translate$/ }, () => ({ path: "translation", namespace: "fixture" }));
     b.onLoad({ filter: /.*/, namespace: "fixture" }, () => ({ contents: 'export const GoogleSubtitle = ({text}) => text; export const GoogleSubtitleProvider = ({children}) => children; export const GoogleTranslateControl = () => null;', loader: "js" }));
   } }] });

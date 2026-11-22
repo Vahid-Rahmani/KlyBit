@@ -16,6 +16,8 @@ type Props = {
   translationLanguage: string;
   onTranslationLanguage: (language: string) => void;
   onAccount: () => void;
+  /** Slim one-line bar for pages whose content should start immediately (German section). */
+  compact?: boolean;
 };
 
 export function AppBrand({ subtitle }: { subtitle: string }) {
@@ -68,11 +70,11 @@ function SidebarToggle() {
   </button></>;
 }
 
-export function StudyHeader({ title, course, t, fontScale, onFontScale, translationLanguage, onTranslationLanguage, onAccount }: Props) {
+export function StudyHeader({ title, course, t, fontScale, onFontScale, translationLanguage, onTranslationLanguage, onAccount, compact }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const controlsId = useId();
   const activeCourse = course === "CI/CD" ? "cicd" : course === "Deutsch" ? "german" : course === "Linux" ? "linux" : course === "AZ-900" ? "az900" : course === "Docker" ? "docker" : course === "CCNA" ? "ccna" : "az802";
-  return <header className={`certpath-header${course === "CCNA" && title !== "CCNA Foundations" ? " certpath-header--lab" : ""}`}>
+  return <header className={`certpath-header${course === "CCNA" && title !== "CCNA Foundations" ? " certpath-header--lab" : ""}${compact ? " certpath-header--compact" : ""}`}>
     <div className="header-title"><p className="header-eyebrow">{course} <span>Learning workspace</span></p><h1>{title}</h1></div>
     <div className="header-mobile-actions">
       <SidebarToggle />

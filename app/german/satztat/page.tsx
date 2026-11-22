@@ -32,8 +32,8 @@ export default function SatztatPage() {
   if (!userId) return <main className="study-app min-h-screen"><div className="auth-required"><AuthPanel onClose={() => undefined} onAuthenticated={setUserId} /></div></main>;
   return <GoogleSubtitleProvider language={language}><main className="study-app german-app satztat-app font-scale-content" style={{ "--wincraft-font-scale": fontScale } as CSSProperties}>
     <div className="app-shell german-shell">
-      <aside className="app-sidebar"><AppBrand subtitle="Learn. Practice. Progress." /><GermanNavigation active="satztat" /><div className="german-sidebar-note"><strong>One incident. Two skills.</strong><p>Repair the network. Explain the outcome in German.</p><p>2 playable cases · a focused pilot, not the entire planned campaign.</p></div></aside>
-      <section className="app-content german-content"><StudyHeader title="SatzTat · Network missions" course="Deutsch" t={copy.en} fontScale={fontScale} onFontScale={setFontScale} translationLanguage={language} onTranslationLanguage={setLanguage} onAccount={() => setAccountOpen(true)} /><SatztatWorkspace key={userId} userId={userId} translationLanguage={language} /></section>
+      <aside className="app-sidebar"><AppBrand subtitle="Deutsch" /><GermanNavigation active="satztat" /></aside>
+      <section className="app-content german-content"><StudyHeader compact title="SatzTat · Network missions" course="Deutsch" t={copy.en} fontScale={fontScale} onFontScale={setFontScale} translationLanguage={language} onTranslationLanguage={setLanguage} onAccount={() => setAccountOpen(true)} /><SatztatWorkspace key={userId} userId={userId} translationLanguage={language} /></section>
     </div>{accountOpen && <AccountPanel onClose={() => setAccountOpen(false)} onSignOut={signOut} />}
   </main></GoogleSubtitleProvider>;
 }

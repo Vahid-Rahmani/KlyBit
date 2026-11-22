@@ -73,7 +73,7 @@ try {
   assert.doesNotMatch(grammarShell, /\/german\/b1-grammar/, "the unified navigation must not link a second grammar section");
   assert.equal((grammarShell.match(/<StudyHeader/g) ?? []).length, 1, "the unified grammar shell must keep one header");
   assert.match(grammarShell, /view="?\{?view/, "the shell must pass the dashboard or module view through");
-  const germanForIt = readFileSync("app/german/page.tsx", "utf8");
+  const germanForIt = readFileSync("app/german/it/page.tsx", "utf8");
   assert.doesNotMatch(germanForIt, /href: "\/german\/b1-grammar"/, "German for IT must not advertise a second B1 grammar course");
 
   console.log("B1 route passed: old URL redirects with query/hash into Grammatik A1–B2, no second sidebar/header/quiz, and the unified navigation has one grammar entry.");

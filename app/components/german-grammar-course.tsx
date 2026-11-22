@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft, ArrowRight, Award, BookOpen, Check, ChevronLeft, ChevronRight,
-  CircleHelp, Flag, Headphones, Languages, LayoutDashboard, LockKeyhole,
+  CircleHelp, Flag, Headphones, Languages, LockKeyhole,
   PenLine, RotateCcw, Save, Sparkles, Volume2, X,
 } from "lucide-react";
 import { grammarCurriculum, grammarModuleSpecs, legacyB1QuestionMap, readyGrammarModules, type CurriculumModule } from "@/lib/content/german-a1b2/curriculum";
@@ -143,6 +143,11 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
   const [audioStatus, setAudioStatus] = useState("");
   const [typedDraft, setTypedDraft] = useState<{ id: string; value: string }>({ id: "", value: "" });
   const [levelFilter, setLevelFilter] = useState<"all" | "A1" | "A2" | "B1" | "B2">("all");
+  const [query, setQuery] = useState("");
+  useEffect(() => {  // deep link from the sidebar: /german/grammatik?level=B1
+    const wanted = new URLSearchParams(window.location.search).get("level")?.toUpperCase();
+    if (wanted === "A1" || wanted === "A2" || wanted === "B1" || wanted === "B2") setLevelFilter(wanted);
+  }, []);
   const router = useRouter();
 
   useEffect(() => { stateRef.current = state; }, [state]);
@@ -300,7 +305,9 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
   const overallProgress = overallTotal ? Math.round((overallAnswered / overallTotal) * 1000) / 10 : 0;
   const overallScore = overallAnswered ? Math.round((overallCorrect / overallAnswered) * 100) : 0;
   const lastModule = grammarCurriculum.find((module) => module.id === state.activeModuleId && module.status === "ready") ?? readyGrammarModules[0];
-  const visibleModules = grammarCurriculum.filter((module) => levelFilter === "all" || module.level.includes(levelFilter));
+  const needle = query.trim().toLowerCase();
+  const visibleModules = grammarCurriculum.filter((module) => (levelFilter === "all" || module.level.includes(levelFilter))
+    && (!needle || `${module.title} ${module.titleFa} ${module.summaryFa}`.toLowerCase().includes(needle)));
 
   const activeQuestion = questions[Math.min(moduleState.currentIndex, Math.max(0, questions.length - 1))] ?? questions[0];
   const reviewing = reviewIds.length > 0;
@@ -397,41 +404,27 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
   if (!ready) return <p role="status">Loading your saved German practice…</p>;
 
   if (view === "dashboard") return <div className="gg-course gg-dashboard">
-    <section className="gg-hero gg-dash-hero" aria-labelledby="gg-dashboard-title">
-      <div>
-        <p className="gg-eyebrow">DEIN LERNSTAND · GRAMMATIK A1–B2</p>
-        <h2 id="gg-dashboard-title">Ein Kurs. Zwanzig Module.</h2>
-        <p className="gg-hero-de">Lerne die Regel, übe sie, schreibe eigene Sätze und höre ein Diktat. Jedes der zwanzig Module hat eine eigene Seite mit demselben Ablauf wie Modul 09.</p>
-        {s.ui.dashboardIntro && <p className="gg-hero-fa" lang={s.lang} dir={s.dir}>{s.ui.dashboardIntro}</p>}
-        <LanguageSwitch s={s} />
-        <div className="gg-hero-actions">
-          <a className="gg-primary" href={`/german/grammatik/${lastModule.id}`}>Weiterlernen: {lastModule.title}<ArrowRight size={16} /></a>
-          <a className="gg-secondary" href="#module"><LayoutDashboard size={16} />Alle Module</a>
+    <section className="gg-resume" aria-label="Weiterlernen">
+      <div className="gg-resume-main">
+        <p className="gg-resume-label">Weiterlernen</p>
+        <a className="gg-primary" href={`/german/grammatik/${lastModule.id}`}>{lastModule.title}<ArrowRight size={16} /></a>
+      </div>
+      <div className="gg-resume-progress" aria-label={`${overallAnswered} von ${overallTotal} Fragen beantwortet, ${overallScore} Prozent richtig`}>
+        <progress max={overallTotal || 1} value={overallAnswered} aria-hidden="true" />
+        <span><b>{overallAnswered}</b>/{overallTotal} Fragen · <b>{overallScore}%</b> richtig{overallDifficult ? <> · <b>{overallDifficult}</b> schwierig</> : null}</span>
+      </div>
+      <LanguageSwitch s={s} />
+    </section>
+
+    <section className="gg-dash-panel" id="module" aria-label="Alle Module">
+      <div className="gg-toolbar">
+        <input type="search" className="gg-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Modul suchen · جست‌وجوی ماژول" aria-label="Modul suchen" />
+        <div className="gg-filters gg-level-filter" role="group" aria-label="Nach Niveau filtern">
+          {(["all", "A1", "A2", "B1", "B2"] as const).map((level) => <button key={level} type="button" aria-pressed={levelFilter === level} onClick={() => setLevelFilter(level)}>{level === "all" ? "Alle" : level}<small>{level === "all" ? grammarCurriculum.length : grammarCurriculum.filter((module) => module.level.includes(level)).length}</small></button>)}
         </div>
       </div>
-      <div className="gg-dash-score" aria-label={`${overallScore} Prozent der beantworteten Fragen richtig`}>
-        <strong>{overallScore}%</strong>
-        <span>richtig</span>
-        <small>{overallAnswered} von {overallTotal} Fragen</small>
-      </div>
-    </section>
-
-    <section className="gg-dash-metrics" aria-label="Kursübersicht">
-      <Stat label="Module bereit" value={`${readyGrammarModules.length}/20`} note="je eine eigene Seite" />
-      <Stat label="Beantwortet" value={overallAnswered} note={`von ${overallTotal} Fragen`} />
-      <Stat label="Richtig" value={overallCorrect} note={`${overallWrong} falsch`} />
-      <Stat label="Schwierig markiert" value={overallDifficult} note="für die Wiederholung" />
-    </section>
-
-    <section className="gg-dash-panel" id="module" aria-labelledby="gg-dash-modules-title">
-      <div className="gg-section-heading">
-        <p className="gg-eyebrow">ALLE MODULE · A1 BIS B2</p>
-        <h3 id="gg-dash-modules-title">Wähle dein nächstes Modul</h3>
-        <p>Jedes Modul öffnet eine eigene Seite. Alle zwanzig Module sind ausgearbeitet: mit Lektion, Fragen, Schreiben, Diktat und Ergebnissen.</p>
-      </div>
-      <div className="gg-filters gg-level-filter" role="group" aria-label="Nach Niveau filtern">
-        {(["all", "A1", "A2", "B1", "B2"] as const).map((level) => <button key={level} type="button" aria-pressed={levelFilter === level} onClick={() => setLevelFilter(level)}>{level === "all" ? "Alle Niveaus" : level}</button>)}
-      </div>
+      <p className="gg-count" role="status">{visibleModules.length} Module{levelFilter !== "all" ? ` · Niveau ${levelFilter}` : ""}{needle ? ` · „${query.trim()}“` : ""}</p>
+      {!visibleModules.length && <p className="gg-empty">Kein Modul gefunden. Suche löschen oder „Alle“ wählen.</p>}
       <div className="gg-dash-grid">
         {visibleModules.map((module) => {
           const ready = module.status === "ready";

@@ -124,7 +124,7 @@ try {
   const css = readFileSync("app/german/satztat/satztat.css", "utf8");
   assert.ok(css.includes("@media(max-width:640px)")); assert.ok(css.includes("font-size: max(16px, 1em)"));
   assert.ok(css.includes("max-height: 290px")); assert.ok(css.includes("prefers-reduced-motion"));
-  assert.ok(readFileSync("app/german/page.tsx", "utf8").includes('href="/german/satztat"'));
+  assert.ok(readFileSync("app/components/german-navigation.tsx", "utf8").includes('href: "/german/satztat"'));
   console.log("PASS SatzTat UI: both cases through real React controls, distinct faults, fresh checks, supported errors/variants, no answer oracle, durable exposure, transfer, failed recall verdict, neutral unknown/self-review guards, IME, reload, isolation, scoped reset, blocked storage, translation assistance and authenticated route fixture. CSS contracts only; no rendered-browser/native-phone claim.");
   dom.window.close();
 } finally { Date.now = originalNow; rmSync(scratch, { recursive: true, force: true }); }

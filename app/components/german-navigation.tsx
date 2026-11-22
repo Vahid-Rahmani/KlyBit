@@ -1,17 +1,33 @@
 "use client";
 
-import { ArrowLeft, BookOpen, FolderSearch, Languages, Network } from "lucide-react";
-import { SimpleNavigation } from "@/app/components/simple-learning";
+import type { ReactNode } from "react";
+import { ArrowLeft, BookOpen, FolderSearch, Home, Languages, Network } from "lucide-react";
 
-export type GermanNavKey = "grammatik" | "german" | "grammar-cases" | "satztat";
+export type GermanNavKey = "hub" | "grammatik" | "it" | "grammar-cases" | "satztat";
 
-/** One sidebar for every German page: same order, short labels, one language. */
+type Entry = { key: GermanNavKey | "home"; label: string; href: string; icon: ReactNode; group?: string };
+
+/** The ONE place that lists the German section. Every German page renders this, nothing else builds a menu. */
+const ENTRIES: Entry[] = [
+  { key: "hub", label: "Heute", href: "/german", icon: <Home size={18} /> },
+  { key: "grammatik", label: "Grammatik A1–B2", href: "/german/grammatik", icon: <Languages size={18} />, group: "Lernen" },
+  { key: "it", label: "Deutsch für IT", href: "/german/it", icon: <BookOpen size={18} /> },
+  { key: "grammar-cases", label: "Grammatik-Fälle", href: "/german/grammar-cases", icon: <FolderSearch size={18} />, group: "Üben" },
+  { key: "satztat", label: "Netzwerk-Fälle", href: "/german/satztat", icon: <Network size={18} /> },
+  { key: "home", label: "Alle Lernpfade", href: "/", icon: <ArrowLeft size={18} />, group: "Mehr" },
+];
+
+export const GERMAN_LEVELS = ["A1", "A2", "B1", "B2"] as const;
+
+/** Plain anchors on purpose: the framework's client Link throws on the deployed build (see commit 90e30d2). */
 export function GermanNavigation({ active }: { active: GermanNavKey }) {
-  return <SimpleNavigation active={active} items={[
-    { key: "grammatik", label: "Grammatik A1–B2", href: "/german/grammatik", icon: <Languages size={18} /> },
-    { key: "german", label: "Deutsch für IT", href: "/german", icon: <BookOpen size={18} /> },
-    { key: "grammar-cases", label: "Grammatik-Fälle", href: "/german/grammar-cases", icon: <FolderSearch size={18} /> },
-    { key: "satztat", label: "Netzwerk-Fälle", href: "/german/satztat", icon: <Network size={18} /> },
-    { key: "home", label: "Alle Lernpfade", href: "/", icon: <ArrowLeft size={18} /> },
-  ]} />;
+  return <nav className="simple-navigation german-nav" aria-label="Deutsch">
+    {ENTRIES.map((entry) => <div key={entry.key} className="german-nav-item">
+      {entry.group && <p className="german-nav-group">{entry.group}</p>}
+      <a href={entry.href} aria-current={active === entry.key ? "page" : undefined}>{entry.icon}<span>{entry.label}</span></a>
+      {entry.key === "grammatik" && <div className="german-nav-levels" role="group" aria-label="Grammatik nach Niveau">
+        {GERMAN_LEVELS.map((level) => <a key={level} href={`/german/grammatik?level=${level}`}>{level}</a>)}
+      </div>}
+    </div>)}
+  </nav>;
 }

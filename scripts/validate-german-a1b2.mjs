@@ -242,7 +242,7 @@ const moduleRoute = readFileSync("app/german/grammatik/[moduleId]/page.tsx", "ut
 assert.match(moduleRoute, /generateStaticParams/, "module pages must publish their static route parameters");
 assert.match(moduleRoute, /notFound/, "unknown or unfinished modules must return 404");
 assert.match(moduleRoute, /view="module"/, "module pages must render the module view");
-const germanForItRoute = readFileSync("app/german/page.tsx", "utf8");
+const germanForItRoute = readFileSync("app/german/it/page.tsx", "utf8");
 assert.doesNotMatch(germanForItRoute, /href: "\/german\/b1-grammar"/, "German for IT must not advertise a second B1 course");
 
 const structural = auditGermanQuestions(grammarCurriculum);

@@ -136,6 +136,6 @@ try {
   console.log("PASS actual route auth success and network failure states; shared header not duplicated");
   const css = readFileSync("app/german/grammar-cases/grammar-cases.css", "utf8");
   assert.match(css, /@media \(max-width: 560px\)/); assert.match(css, /prefers-reduced-motion/); assert.match(css, /font-size: 16px/);
-  assert.match(readFileSync("app/german/page.tsx", "utf8"), /href="\/german\/grammar-cases"/);
+  assert.match(readFileSync("app/components/german-navigation.tsx", "utf8"), /href: "\/german\/grammar-cases"/);
   console.log("Grammar-case UI DOM contracts passed. These are not real-browser geometry/native-keyboard tests.");
 } finally { Date.now = realNow; rmSync(scratch, { recursive: true, force: true }); }

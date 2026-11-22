@@ -333,3 +333,27 @@ h4.gg-dual-sub { font-size: 12px; font-weight: 500; }
 .gg-lang-switch button { border: 1px solid var(--cp-line); background: var(--cp-surface); color: inherit; border-radius: 999px; padding: 5px 12px; font-size: 13px; cursor: pointer; }
 .gg-lang-switch button[aria-pressed="true"] { background: var(--cp-accent); border-color: var(--cp-accent); color: var(--cp-surface); }
 .gg-lang-switch button:focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 2px; }
+
+/* ===== Dashboard: one resume bar, then the modules ===== */
+.gg-resume { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 12px; padding: 12px 16px; border: 1px solid var(--cp-line); border-radius: 10px; background: var(--cp-alt); }
+.gg-resume-main { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.gg-resume-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--cp-muted); }
+.gg-resume-progress { flex: 1 1 220px; display: grid; gap: 4px; min-width: 180px; font-size: 12px; color: var(--cp-muted); }
+.gg-resume-progress progress { width: 100%; height: 6px; accent-color: var(--cp-accent); }
+.gg-resume-progress b { color: var(--cp-text); }
+.gg-toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.gg-search { flex: 1 1 220px; min-height: 40px; padding: 7px 12px; border: 1px solid var(--cp-line); border-radius: 8px; background: var(--cp-surface); color: var(--cp-text); font-size: 16px; }
+.gg-search:focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 2px; }
+.gg-toolbar .gg-level-filter { margin: 0; }
+.gg-filters button small { margin-left: 6px; opacity: .7; font-size: 10px; }
+.gg-count { margin: 4px 2px 10px; font-size: 12px; color: var(--cp-muted); }
+.gg-empty { padding: 20px; text-align: center; color: var(--cp-muted); }
+.gg-dash-panel { padding: 14px; }
+
+.gg-resume-progress progress, .gg-dash-card progress { appearance: none; -webkit-appearance: none; border: 0; border-radius: 999px; background: var(--cp-line); overflow: hidden; }
+.gg-resume-progress progress::-webkit-progress-bar, .gg-dash-card progress::-webkit-progress-bar { background: var(--cp-line); border-radius: 999px; }
+.gg-resume-progress progress::-webkit-progress-value, .gg-dash-card progress::-webkit-progress-value { background: var(--cp-accent); border-radius: 999px; }
+.gg-resume-progress progress::-moz-progress-bar, .gg-dash-card progress::-moz-progress-bar { background: var(--cp-accent); border-radius: 999px; }
+.gg-resume .gg-lang-switch { margin: 0 0 0 auto; gap: 5px; }
+.gg-resume .gg-lang-switch button { min-height: 32px; padding: 3px 11px; font-size: 12px; }
+@media (max-width: 640px) { .gg-resume { gap: 10px; padding: 10px 12px; } .gg-resume .gg-lang-switch { margin: 0; } .gg-resume .gg-lang-switch button { min-height: 36px; } .gg-resume-progress { flex-basis: 100%; } }

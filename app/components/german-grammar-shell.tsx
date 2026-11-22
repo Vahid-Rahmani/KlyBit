@@ -8,7 +8,6 @@ import { AppBrand, StudyHeader } from "@/app/components/study-header";
 import { AccountPanel, AuthPanel } from "@/app/components/learning-views";
 import { GoogleSubtitleProvider } from "@/app/components/google-translate";
 import { GermanGrammarCourse } from "@/app/components/german-grammar-course";
-import { readyGrammarModules } from "@/lib/content/german-a1b2/curriculum";
 import { copy } from "@/lib/course-data";
 
 type GrammarShellProps =
@@ -46,16 +45,12 @@ export function GermanGrammarShell({ view, moduleId }: GrammarShellProps) {
     <main className="study-app german-app font-scale-content" style={{ "--wincraft-font-scale": fontScale } as CSSProperties}>
       <div className="app-shell german-shell">
         <aside className="app-sidebar">
-          <AppBrand subtitle="Grammatik A1–B2" />
+          <AppBrand subtitle="Deutsch" />
           <GermanNavigation active="grammatik" />
-          <div className="german-sidebar-note">
-            <strong>Grammatik A1–B2</strong>
-            <p>Ein Lehrwerk mit 20 Modulen. Jedes Modul hat eine eigene Seite mit Lernen, Üben, Schreiben, Diktat und Ergebnissen.</p>
-            <p>Alle {readyGrammarModules.length} von 20 Modulen sind freigeschaltet.</p>
-          </div>
         </aside>
         <section className="app-content german-content">
           <StudyHeader
+            compact
             title="Grammatik A1–B2"
             course="Deutsch"
             t={copy.en}

@@ -32,8 +32,8 @@ export default function GrammarCasesPage() {
   if (!userId) return <main className="study-app min-h-screen"><div className="auth-required"><AuthPanel onClose={() => undefined} onAuthenticated={setUserId} /></div></main>;
   return <main className="study-app german-app gc-app font-scale-content" style={{ "--wincraft-font-scale": fontScale } as CSSProperties}>
     <div className="app-shell german-shell">
-      <aside className="app-sidebar"><AppBrand subtitle="Learn. Practice. Progress." /><GermanNavigation active="grammar-cases" /><div className="german-sidebar-note" lang="fa" dir="rtl"><strong>یک ساختار؛ موقعیت‌های گوناگون</strong><p>بازی شبکه جداست. اینجا ساختن و اصلاح جمله، خودِ بازی است.</p><p>۲۴ مأموریت · ۴ فصل · بدون تایمر اجباری</p></div></aside>
-      <section className="app-content german-content"><StudyHeader title="SatzTat · پرونده‌های گرامر" course="Deutsch" t={copy.fa} fontScale={fontScale} onFontScale={setFontScale} translationLanguage={translation} onTranslationLanguage={setTranslation} onAccount={() => setAccount(true)} /><GrammarCasesWorkspace key={userId} userId={userId} /></section>
+      <aside className="app-sidebar"><AppBrand subtitle="Deutsch" /><GermanNavigation active="grammar-cases" /></aside>
+      <section className="app-content german-content"><StudyHeader compact title="SatzTat · پرونده‌های گرامر" course="Deutsch" t={copy.fa} fontScale={fontScale} onFontScale={setFontScale} translationLanguage={translation} onTranslationLanguage={setTranslation} onAccount={() => setAccount(true)} /><GrammarCasesWorkspace key={userId} userId={userId} /></section>
     </div>
     {account && <AccountPanel onClose={() => setAccount(false)} onSignOut={async () => {
       try { const r = await fetch("/api/auth/logout", { method: "POST" }); if (!r.ok) return false; setUserId(null); setAccount(false); return true; } catch { return false; }
