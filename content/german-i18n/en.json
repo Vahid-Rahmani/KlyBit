@@ -1,1 +1,12 @@
-{}
+{
+  "l:wechselpraepositionen:0:body": "When describing a fixed position, the noun after a two-way preposition takes the dative. Typical verbs are sein, bleiben, liegen, stehen, sitzen, and hängen (in a state).",
+  "l:wechselpraepositionen:0:ex0": "The book lies on the table.",
+  "l:wechselpraepositionen:0:ex1": "The cat sleeps under the sofa.",
+  "l:wechselpraepositionen:0:ex2": "We stay in the kitchen.",
+  "l:wechselpraepositionen:0:title": "Wo? — Static position",
+  "l:wechselpraepositionen:1:body": "When describing movement toward a goal, the noun takes the accusative. Typical verbs are gehen, fahren, legen, stellen, setzen, and hängen (as an action).",
+  "l:wechselpraepositionen:1:title": "Wohin? — Movement to a goal",
+  "l:wechselpraepositionen:intro": "The nine two-way prepositions take the dative when describing a position (Wo?) and the accusative when describing movement toward a destination (Wohin?).",
+  "m:wechselpraepositionen:summary": "The nine two-way prepositions (in, an, auf, unter, über, vor, hinter, neben, zwischen) take the dative for location (Wo?) and the accusative for direction (Wohin?).",
+  "m:wechselpraepositionen:title": "Two-way prepositions"
+}
