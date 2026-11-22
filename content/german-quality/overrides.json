@@ -1,6 +1,7 @@
 {
   "remove": {
-    "b1-q-dativ-c-g-d1": "Same structure and rule as b1-q-dativ-c-d31, only noun differs"
+    "b1-q-dativ-c-g-d1": "Same structure and rule as b1-q-dativ-c-d31, only noun differs",
+    "b1-q-dativ-c-d36": "Same structure 'sprechen mit + Dativ' with different noun only"
   },
   "replace": {}
 }
