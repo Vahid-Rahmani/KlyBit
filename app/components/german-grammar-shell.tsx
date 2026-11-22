@@ -7,6 +7,7 @@ import { AppBrand, StudyHeader } from "@/app/components/study-header";
 
 import { AccountPanel, AuthPanel } from "@/app/components/learning-views";
 import { GoogleSubtitleProvider } from "@/app/components/google-translate";
+import { SupportProvider, SupportSwitch } from "@/app/components/german-support";
 import { GermanGrammarCourse } from "@/app/components/german-grammar-course";
 import { copy } from "@/lib/course-data";
 
@@ -41,7 +42,7 @@ export function GermanGrammarShell({ view, moduleId }: GrammarShellProps) {
   if (loading) return <main className="study-app min-h-screen"><p className="p-8" role="status">Loading your learning account…</p></main>;
   if (!userId) return <main className="study-app min-h-screen"><div className="auth-required"><AuthPanel onClose={() => undefined} onAuthenticated={setUserId} /></div></main>;
 
-  return <GoogleSubtitleProvider language={language}>
+  return <SupportProvider><GoogleSubtitleProvider language={language}>
     <main className="study-app german-app font-scale-content" style={{ "--wincraft-font-scale": fontScale } as CSSProperties}>
       <div className="app-shell german-shell">
         <aside className="app-sidebar">
@@ -51,6 +52,7 @@ export function GermanGrammarShell({ view, moduleId }: GrammarShellProps) {
         <section className="app-content german-content">
           <StudyHeader
             compact
+            extra={<SupportSwitch />}
             title="Grammatik A1–B2"
             course="Deutsch"
             t={copy.en}
@@ -65,5 +67,5 @@ export function GermanGrammarShell({ view, moduleId }: GrammarShellProps) {
       </div>
       {accountOpen && <AccountPanel onClose={() => setAccountOpen(false)} onSignOut={signOut} />}
     </main>
-  </GoogleSubtitleProvider>;
+  </GoogleSubtitleProvider></SupportProvider>;
 }

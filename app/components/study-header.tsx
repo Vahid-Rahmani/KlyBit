@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import { Menu, SlidersHorizontal, UserRound } from "lucide-react";
 import { ThemeControl } from "@/app/components/appearance-provider";
 import { FontSizeControl } from "@/app/components/training-views";
@@ -18,6 +18,8 @@ type Props = {
   onAccount: () => void;
   /** Slim one-line bar for pages whose content should start immediately (German section). */
   compact?: boolean;
+  /** Optional control shown next to the title (German grammar: explanation language). */
+  extra?: ReactNode;
 };
 
 export function AppBrand({ subtitle }: { subtitle: string }) {
@@ -70,12 +72,12 @@ function SidebarToggle() {
   </button></>;
 }
 
-export function StudyHeader({ title, course, t, fontScale, onFontScale, translationLanguage, onTranslationLanguage, onAccount, compact }: Props) {
+export function StudyHeader({ title, course, t, fontScale, onFontScale, translationLanguage, onTranslationLanguage, onAccount, compact, extra }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const controlsId = useId();
   const activeCourse = course === "CI/CD" ? "cicd" : course === "Deutsch" ? "german" : course === "Linux" ? "linux" : course === "AZ-900" ? "az900" : course === "Docker" ? "docker" : course === "CCNA" ? "ccna" : "az802";
   return <header className={`certpath-header${course === "CCNA" && title !== "CCNA Foundations" ? " certpath-header--lab" : ""}${compact ? " certpath-header--compact" : ""}`}>
-    <div className="header-title"><p className="header-eyebrow">{course} <span>Learning workspace</span></p><h1>{title}</h1></div>
+    <div className="header-title"><p className="header-eyebrow">{course} <span>Learning workspace</span></p><div className="header-title-row"><h1>{title}</h1>{extra}</div></div>
     <div className="header-mobile-actions">
       <SidebarToggle />
       <CourseSwitcher active={activeCourse} />

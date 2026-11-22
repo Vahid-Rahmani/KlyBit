@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-html-link-for-pages -- The vinext Link router throws on the deployed build; plain anchors keep these grammar routes usable. */
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft, ArrowRight, Award, BookOpen, Check, ChevronLeft, ChevronRight,
@@ -16,6 +16,7 @@ import {
   parseCourseState, type GrammarCourseState, type GrammarModuleProgress, type GrammarQuestion,
 } from "@/lib/content/german-a1b2/types";
 import { SUPPORT_LANGS, supportKey, useSupportLanguage, type Support } from "@/lib/content/german-a1b2/support-language";
+import { SupportContext } from "@/app/components/german-support";
 
 const STORAGE_KEY = (userId: string) => `klybit-german-a1b2:v1:${userId}`;
 const LEGACY_B1_KEY = (userId: string) => `klybit-german:b1:v1:${userId}`;
@@ -72,12 +73,15 @@ function FullExplanation({ question, correct, chosen, typed, s }: { question: Gr
     {!correct && selectedText && <p className="gg-chosen" lang={s.lang} dir={s.dir}>{s.ui.yourAnswer}: <bdi lang="de" dir="ltr">{selectedText}</bdi> — {s.ui.notRight}</p>}
     {s.text(supportKey.questionExplanation(question.id), explanation.translationFa) && <section className="gg-fa-explanation" lang={s.lang} dir={s.dir}><h4>{s.ui.explanation}</h4><p>{s.text(supportKey.questionExplanation(question.id), explanation.translationFa)}</p></section>}
     <section><h4>Grammatische Regel</h4><p lang="de" dir="ltr">{explanation.rule}</p></section>
+    <details className="gg-more">
+    <summary>Mehr Details · Begründung, Satzanalyse, Beispiele</summary>
     <section><h4>Begründung</h4><p lang="de" dir="ltr">{explanation.reason}</p></section>
     <section><h4>Satzanalyse</h4><p lang="de" dir="ltr">{explanation.analysis}</p></section>
     <section><h4>Wortstellung</h4><p lang="de" dir="ltr">{explanation.wordOrder}</p></section>
     <section><h4>Formen und Kasus</h4><p lang="de" dir="ltr">{explanation.forms}</p></section>
     <section className="gg-error"><h4>Fehleranalyse</h4><p lang="de" dir="ltr">{explanation.error}</p></section>
     <section><h4>Zwei neue Beispiele</h4><ul lang="de" dir="ltr">{explanation.examples.map((example) => <li key={example}>{example}</li>)}</ul></section>
+    </details>
   </div>;
 }
 
@@ -124,7 +128,20 @@ function mergeLegacyB1Markers(state: GrammarCourseState, userId: string): Gramma
   }
 }
 
-export function GermanGrammarCourse({ userId, initialModuleId, view = "module", onNavigate }: { userId: string; initialModuleId?: string; view?: "dashboard" | "module"; onNavigate?: (path: string) => void }) {
+type CourseProps = { userId: string; initialModuleId?: string; view?: "dashboard" | "module"; onNavigate?: (path: string) => void };
+
+function OwnSupportCourse(props: CourseProps) {
+  const s = useSupportLanguage();
+  return <CourseView {...props} s={s} headerSwitch={false} />;
+}
+
+/** Inside the study shell the explanation language is chosen in the header; standalone (tests) the course brings its own switch. */
+export function GermanGrammarCourse(props: CourseProps) {
+  const provided = useContext(SupportContext);
+  return provided ? <CourseView {...props} s={provided} headerSwitch /> : <OwnSupportCourse {...props} />;
+}
+
+function CourseView({ userId, initialModuleId, view = "module", onNavigate, s, headerSwitch }: CourseProps & { s: Support; headerSwitch: boolean }) {
   const [state, setState] = useState<GrammarCourseState>(() => createCourseState(grammarModuleSpecs, initialModuleId ?? "infinitiv-zu"));
   const stateRef = useRef(state);
   const dirtyRef = useRef(false);
@@ -133,7 +150,6 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
   const [serverMode, setServerMode] = useState<"checking" | "server" | "browser">("checking");
   const [saveStatus, setSaveStatus] = useState("Fortschritt wird geladen …");
   const [tab, setTab] = useState<Tab>("learn");
-  const s = useSupportLanguage();
   const [reviewIds, setReviewIds] = useState<string[]>([]);
   const [reviewPos, setReviewPos] = useState(0);
   const [resultFilter, setResultFilter] = useState<ResultFilter>("all");
@@ -322,6 +338,16 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
   const currentFormat = currentQuestion.format ?? "choice";
   const currentIsTyped = currentFormat === "fill" || currentFormat === "order";
   const currentIndex = questions.findIndex((question) => question.id === currentQuestion.id);
+  // Next/previous question: bring the question back to the top of the screen so nobody has to scroll for every item.
+  const shownQuestionId = currentQuestion.id;
+  const lastShownRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (lastShownRef.current && lastShownRef.current !== shownQuestionId) {
+      const panel = document.getElementById("gg-question-title")?.closest("section");
+      if (panel && panel.getBoundingClientRect().top < 0) panel.scrollIntoView?.({ block: "start" });
+    }
+    lastShownRef.current = shownQuestionId;
+  }, [shownQuestionId]);
   const positionLabel = reviewing ? `${reviewPos + 1} / ${reviewIds.length}` : `${currentIndex + 1} / ${questions.length}`;
   const typed = typedDraft.id === currentQuestion.id ? typedDraft.value : (typeof currentAnswer === "string" ? currentAnswer : "");
   const setTyped = (value: string) => setTypedDraft({ id: currentQuestion.id, value });
@@ -413,7 +439,7 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
         <progress max={overallTotal || 1} value={overallAnswered} aria-hidden="true" />
         <span><b>{overallAnswered}</b>/{overallTotal} Fragen · <b>{overallScore}%</b> richtig{overallDifficult ? <> · <b>{overallDifficult}</b> schwierig</> : null}</span>
       </div>
-      <LanguageSwitch s={s} />
+      {!headerSwitch && <LanguageSwitch s={s} />}
     </section>
 
     <section className="gg-dash-panel" id="module" aria-label="Alle Module">
@@ -456,18 +482,13 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
 
   return <div className="gg-course">
     <section className="gg-hero" aria-labelledby="gg-course-title">
-      <div>
-        <a className="gg-back" href="/german/grammatik"><ArrowLeft size={14} />Dashboard</a>
-        <p className="gg-eyebrow">GRAMMATIK A1–B2 · MODUL {String(activeModule.number).padStart(2, "0")} VON 20</p>
+      <a className="gg-back" href="/german/grammatik"><ArrowLeft size={14} />Dashboard</a>
+      <div className="gg-hero-title">
+        <p className="gg-eyebrow">MODUL {String(activeModule.number).padStart(2, "0")} VON 20</p>
         <h2 id="gg-course-title">{activeModule.title}</h2>
-        <Dual className="gg-hero-dual" de={lesson.introDe} support={s.text(supportKey.lessonIntro(activeModule.id), lesson.introFa)} s={s} />
-        <LanguageSwitch s={s} />
       </div>
-      <div className="gg-hero-numbers" aria-label="Modulübersicht">
-        <div><strong>{questions.length}</strong><span>Fragen</span></div>
-        <div><strong>{lesson.sections.length}</strong><span>Themen</span></div>
-        <div><strong>{activeModule.level}</strong><span>Niveau</span></div>
-      </div>
+      <p className="gg-hero-chips" aria-label="Modulübersicht"><span>{activeModule.level}</span><span>{questions.length} Fragen</span></p>
+      {!headerSwitch && <LanguageSwitch s={s} />}
     </section>
 
     <div className="gg-tabs" role="tablist" aria-label="Modulbereiche">
@@ -618,6 +639,15 @@ export function GermanGrammarCourse({ userId, initialModuleId, view = "module", 
         <button type="button" className="gg-reset" onClick={resetModule}><RotateCcw size={14} />Nur dieses Modul zurücksetzen</button>
       </aside>
     </div>
+    <details className="gg-about">
+      <summary>Über dieses Modul<span lang="fa" dir="rtl">درباره این ماژول</span></summary>
+      <Dual className="gg-hero-dual" de={lesson.introDe} support={s.text(supportKey.lessonIntro(activeModule.id), lesson.introFa)} s={s} />
+      <div className="gg-hero-numbers" aria-label="Modulübersicht">
+        <div><strong>{questions.length}</strong><span>Fragen</span></div>
+        <div><strong>{lesson.sections.length}</strong><span>Themen</span></div>
+        <div><strong>{activeModule.level}</strong><span>Niveau</span></div>
+      </div>
+    </details>
   </div>;
 }
 
