@@ -1,4 +1,9 @@
 {
+  "l:dativ:0:body": "The most important are mit, nach, aus, bei, von, zu, seit, and gegenüber. They never change case: even with movement they stay in the dative.",
+  "l:dativ:0:ex0": "I go by bus.",
+  "l:dativ:0:ex1": "She comes from Switzerland.",
+  "l:dativ:0:title": "Fixed Dative Prepositions",
+  "l:dativ:intro": "Dative prepositions always require the dative case. The dative often marks the recipient, location, or reference of an action.",
   "l:wechselpraepositionen:0:body": "When describing a fixed position, the noun after a two-way preposition takes the dative. Typical verbs are sein, bleiben, liegen, stehen, sitzen, and hängen (in a state).",
   "l:wechselpraepositionen:0:ex0": "The book lies on the table.",
   "l:wechselpraepositionen:0:ex1": "The cat sleeps under the sofa.",
@@ -15,8 +20,13 @@
   "l:wechselpraepositionen:2:ex2": "The picture hangs on the wall.",
   "l:wechselpraepositionen:2:title": "The verb also decides",
   "l:wechselpraepositionen:3:body": "Common contractions include in+dem=im, an+dem=am, in+das=ins, an+das=ans; \"nach Hause\" and \"zu Hause\" do not use a two-way preposition. Always ask first: Wo? or Wohin?",
+  "l:wechselpraepositionen:3:ex0": "I am in the office.",
+  "l:wechselpraepositionen:3:ex1": "I go into the office.",
+  "l:wechselpraepositionen:3:ex2": "He comes home.",
   "l:wechselpraepositionen:3:title": "Contractions and typical mistakes",
   "l:wechselpraepositionen:intro": "The nine two-way prepositions take the dative when describing a position (Wo?) and the accusative when describing movement toward a destination (Wohin?).",
+  "m:dativ:summary": "The prepositions mit, nach, aus, bei, von, zu, seit, and gegenüber always take the dative case.",
+  "m:dativ:title": "Prepositions with Dative",
   "m:wechselpraepositionen:summary": "The nine two-way prepositions (in, an, auf, unter, über, vor, hinter, neben, zwischen) take the dative for location (Wo?) and the accusative for direction (Wohin?).",
   "m:wechselpraepositionen:title": "Two-way prepositions"
 }
