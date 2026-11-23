@@ -1,7 +1,8 @@
 {
   "remove": {
     "b1-q-dativ-c-g-d1": "Same structure and rule as b1-q-dativ-c-d31, only noun differs",
-    "b1-q-dativ-c-d36": "Same structure 'sprechen mit + Dativ' with different noun only"
+    "b1-q-dativ-c-d36": "Same structure 'sprechen mit + Dativ' with different noun only",
+    "gen-075": "Same genitive attribute structure as gen-074 (noun‑noun genitive), only plural vs singular."
   },
   "replace": {}
 }
