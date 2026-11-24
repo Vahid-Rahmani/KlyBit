@@ -5,7 +5,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft, ArrowRight, Award, BookOpen, Check, ChevronLeft, ChevronRight,
-  CircleHelp, Flag, Headphones, Languages, LockKeyhole,
+  CircleHelp, Flag, Headphones, Languages, LockKeyhole, PanelLeftClose, PanelLeftOpen,
   PenLine, RotateCcw, Save, Sparkles, Volume2, X,
 } from "lucide-react";
 import { grammarCurriculum, grammarModuleSpecs, legacyB1QuestionMap, readyGrammarModules, type CurriculumModule } from "@/lib/content/german-a1b2/curriculum";
@@ -21,6 +21,7 @@ import { SupportContext } from "@/app/components/german-support";
 const STORAGE_KEY = (userId: string) => `klybit-german-a1b2:v1:${userId}`;
 const LEGACY_B1_KEY = (userId: string) => `klybit-german:b1:v1:${userId}`;
 const MAX_DRAFT = 4000;
+const MODULES_COLLAPSED_KEY = "klybit-german-modules-collapsed";
 type Tab = "learn" | "practice" | "writing" | "dictation" | "results";
 type ResultFilter = "all" | "wrong" | "difficult" | "open";
 
@@ -284,6 +285,16 @@ function CourseView({ userId, initialModuleId, view = "module", onNavigate, s, h
   const writingTasks = activeModule.id === "infinitiv-zu" ? zuInfinitivWritingTasks : authoredPractice?.writing ?? (lesson ? writingTasksForLesson(lesson) : []);
   const dictationSentences = activeModule.id === "infinitiv-zu" ? zuInfinitivDictation : authoredPractice?.dictation ?? (lesson ? dictationForLesson(lesson) : []);
 
+  // The course only renders on the client (after the account check), so reading storage here is safe.
+  const [modulesCollapsed, setModulesCollapsed] = useState(() => {
+    try { return typeof window !== "undefined" && window.localStorage.getItem(MODULES_COLLAPSED_KEY) === "1"; } catch { return false; }
+  });
+  const toggleModules = () => setModulesCollapsed((current) => {
+    const next = !current;
+    try { window.localStorage.setItem(MODULES_COLLAPSED_KEY, next ? "1" : "0"); } catch { /* storage unavailable */ }
+    return next;
+  });
+
   const mutateModule = (updater: (current: GrammarModuleProgress) => GrammarModuleProgress) => {
     setState((current) => {
       const existing = current.modules[activeModule.id] ?? emptyModuleProgress();
@@ -501,24 +512,45 @@ function CourseView({ userId, initialModuleId, view = "module", onNavigate, s, h
       {grammarCurriculum.map((module) => <option key={module.id} value={module.id} disabled={module.status !== "ready"}>{String(module.number).padStart(2, "0")} · {module.title}{module.status === "ready" ? ` · ${module.questionCount} Fragen` : " · noch nicht freigeschaltet"}</option>)}
     </select></label>
 
-    <div className="gg-layout">
-      <aside className="gg-modules" aria-label="20 Grammatikmodule">
-        <div className="gg-side-heading"><h3><BookOpen size={16} />20 Module</h3><span>{readyGrammarModules.length} bereit</span></div>
+    <div className={`gg-layout${modulesCollapsed ? " is-modules-collapsed" : ""}`}>
+      <aside id="gg-module-list" className="gg-modules" aria-label="20 Grammatikmodule">
+        <div className="gg-side-heading gg-modules-head">
+          <h3><BookOpen size={16} /><span>20 Module</span></h3>
+          <button type="button" className="gg-modules-toggle" aria-expanded={!modulesCollapsed} aria-controls="gg-module-list" title={modulesCollapsed ? "Modulliste ausklappen" : "Modulliste einklappen"} onClick={toggleModules}>
+            {modulesCollapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}<span className="sr-only">{modulesCollapsed ? "Modulliste ausklappen" : "Modulliste einklappen"}</span>
+          </button>
+        </div>
         <p className="gg-module-note">Alle {readyGrammarModules.length} von 20 Modulen sind ausgearbeitet und freigeschaltet.</p>
-        {grammarCurriculum.map((module) => <button key={module.id} className="gg-module-item" type="button" disabled={module.status !== "ready"} aria-current={module.id === activeModule.id ? "step" : undefined} onClick={() => openModulePage(module)}>
-          <span className="gg-module-number">{String(module.number).padStart(2, "0")}</span>
-          <span className="gg-module-title"><b>{module.title}</b>{s.text(supportKey.moduleTitle(module.id), module.titleFa) && <small lang={s.lang} dir={s.dir}>{s.text(supportKey.moduleTitle(module.id), module.titleFa)}</small>}</span>
-          {module.status === "ready" ? <span className="gg-module-count">{module.questionCount}</span> : <LockKeyhole size={13} />}
-        </button>)}
+        {grammarCurriculum.map((module) => {
+          const answered = Object.keys(state.modules[module.id]?.answers ?? {}).length;
+          const done = module.questionCount > 0 && answered >= module.questionCount;
+          const moduleFa = s.text(supportKey.moduleTitle(module.id), module.titleFa);
+          return <button key={module.id} className={`gg-module-item${done ? " is-done" : ""}`} type="button" title={`${String(module.number).padStart(2, "0")} · ${module.title}`} disabled={module.status !== "ready"} aria-current={module.id === activeModule.id ? "step" : undefined} onClick={() => openModulePage(module)}>
+          <span className="gg-module-number">{done ? <Check size={13} /> : String(module.number).padStart(2, "0")}</span>
+          <span className="gg-module-title"><b lang="de">{module.title}</b>{moduleFa && <small lang={s.lang} dir={s.dir}>{moduleFa}</small>}{module.status === "ready" && answered > 0 && !done && <i className="gg-module-progress" aria-hidden="true"><i style={{ width: `${Math.round((answered / module.questionCount) * 100)}%` }} /></i>}</span>
+          {module.status !== "ready" && <LockKeyhole size={13} />}
+        </button>;
+        })}
       </aside>
 
       <main id="gg-panel" className="gg-main" role="tabpanel" aria-labelledby={`gg-tab-${tab}`}>
         {tab === "learn" && <section className="gg-lesson">
           <div className="gg-section-heading"><p className="gg-eyebrow">SCHRITT 1 · VERSTEHEN</p><h3>Die Regel in {lesson.sections.length} Blickwinkeln</h3><p lang={s.lang === "de" ? "de" : s.lang} dir={s.dir}>{s.ui.lessonHint}</p></div>
-          {lesson.sections.map((section, index) => <article key={section.titleDe} className="gg-lesson-card">
-            <span className="gg-lesson-index">{String(index + 1).padStart(2, "0")}</span>
-            <div><Dual heading de={section.titleDe} support={s.text(supportKey.lessonTitle(activeModule.id, index), section.titleFa)} s={s} /><Dual de={section.bodyDe} support={s.text(supportKey.lessonBody(activeModule.id, index), section.bodyFa)} s={s} /><ul className="gg-examples">{section.examples.map((example, exampleIndex) => { const translated = s.text(supportKey.lessonExample(activeModule.id, index, exampleIndex), section.examplesFa?.[exampleIndex]); return <li key={example}><span lang="de" dir="ltr">{example}</span>{translated && <span className="gg-example-fa" lang={s.lang} dir={s.dir}>{translated}</span>}</li>; })}</ul></div>
-          </article>)}
+          {lesson.sections.map((section, index) => {
+            const titleSupport = s.text(supportKey.lessonTitle(activeModule.id, index), section.titleFa);
+            const bodySupport = s.text(supportKey.lessonBody(activeModule.id, index), section.bodyFa);
+            return <article key={section.titleDe} className="gg-lesson-card">
+              <header className="gg-lesson-head">
+                <span className="gg-lesson-index">{String(index + 1).padStart(2, "0")}</span>
+                <div className="gg-lesson-titles">
+                  {titleSupport ? <><h4 lang={s.lang} dir={s.dir}>{titleSupport}</h4><p className="gg-lesson-de-title" lang="de" dir="ltr">{section.titleDe}</p></> : <h4 lang="de" dir="ltr">{section.titleDe}</h4>}
+                </div>
+              </header>
+              {bodySupport && <div className="gg-lesson-box gg-lesson-support" lang={s.lang} dir={s.dir}><span className="gg-box-label">{s.ui.explanation}</span><p>{bodySupport}</p></div>}
+              <div className="gg-lesson-box gg-lesson-german" lang="de" dir="ltr"><span className="gg-box-label">Regel · Deutsch</span><p>{section.bodyDe}</p></div>
+              {section.examples.length > 0 && <div className="gg-example-block"><span className="gg-box-label" lang="de" dir="ltr">Beispiele</span><ul className="gg-examples">{section.examples.map((example, exampleIndex) => { const translated = s.text(supportKey.lessonExample(activeModule.id, index, exampleIndex), section.examplesFa?.[exampleIndex]); return <li key={example}><span lang="de" dir="ltr">{example}</span>{translated && <span className="gg-example-fa" lang={s.lang} dir={s.dir}>{translated}</span>}</li>; })}</ul></div>}
+            </article>;
+          })}
           <div className="gg-callout"><CircleHelp size={18} /><div><strong>So wird bewertet</strong><p>Die Lösung erscheint erst nach deiner Auswahl. Richtig ist nur die Form, die im aktuellen Satz grammatisch und inhaltlich passt. Antworten, schwierige Markierungen und Entwürfe werden im Konto gespeichert; die Erklärung bleibt Teil jeder Frage.</p></div></div>
           <button type="button" className="gg-primary" onClick={() => setTab("practice")}><Sparkles size={16} />Mit Frage 1 beginnen</button>
         </section>}

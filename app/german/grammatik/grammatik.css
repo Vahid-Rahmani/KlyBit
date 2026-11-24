@@ -50,25 +50,42 @@
 .gg-tabs button:hover { color: var(--cp-text); }
 
 .gg-mobile-module { display: none; }
-.gg-layout { display: grid; grid-template-columns: 238px minmax(0, 1fr) 252px; gap: 14px; align-items: start; }
+.gg-layout { display: grid; grid-template-columns: 252px minmax(0, 1fr) 252px; gap: 16px; align-items: start; }
+.gg-layout.is-modules-collapsed { grid-template-columns: 58px minmax(0, 1fr) 252px; }
 .gg-layout > * { min-width: 0; }
 .gg-modules, .gg-side-card, .gg-question, .gg-lesson, .gg-writing, .gg-dictation, .gg-results { border: 1px solid var(--cp-line); border-radius: 12px; background: var(--cp-alt); }
 
-.gg-modules { position: sticky; top: 12px; max-height: calc(100vh - 28px); overflow: auto; padding: 12px; }
 .gg-side-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .gg-side-heading h3 { display: flex; align-items: center; gap: 7px; margin: 0; font-size: 12px; font-weight: 750; }
 .gg-side-heading > span { color: var(--cp-muted); font-size: 10px; white-space: nowrap; }
-.gg-module-note { margin: 9px 0 10px; color: var(--cp-muted); font-size: 10px; line-height: 1.7; }
-.gg-modules .gg-module-item { display: flex; align-items: center; gap: 7px; width: 100%; min-height: 43px; margin: 3px 0; padding: 6px 7px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: var(--cp-text); text-align: left; text-decoration: none; }
+
+/* Module list: a drawer that collapses to a slim rail of numbers. */
+.gg-modules { position: sticky; top: 12px; max-height: calc(100vh - 28px); overflow: auto; padding: 0 8px 10px; scrollbar-width: thin; }
+.gg-modules-head { position: sticky; top: 0; z-index: 1; margin: 0 -8px 6px; padding: 10px 10px 9px 12px; border-bottom: 1px solid var(--cp-line); background: var(--cp-alt); }
+.gg-modules-head h3 { font-size: 13px; }
+.gg-modules-toggle { display: inline-grid; flex: 0 0 auto; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid var(--cp-line); border-radius: 8px; background: var(--cp-surface); color: var(--cp-muted); }
+.gg-modules-toggle:hover { border-color: var(--cp-accent); color: var(--cp-accent); }
+.gg-module-note { display: none; }
+.gg-modules .gg-module-item { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 50px; margin: 2px 0; padding: 7px 8px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--cp-text); text-align: left; text-decoration: none; transition: background-color .15s ease, border-color .15s ease; }
 .gg-modules .gg-module-item:hover:not(:disabled) { border-color: var(--cp-line); background: var(--cp-selected); }
-.gg-modules .gg-module-item[aria-current="step"] { border-color: var(--cp-accent); background: var(--cp-selected); }
+.gg-modules .gg-module-item[aria-current="step"] { border-color: color-mix(in srgb, var(--cp-accent) 40%, transparent); background: var(--cp-selected); }
 .gg-modules .gg-module-item:disabled, .gg-modules .gg-module-item[aria-disabled="true"] { opacity: .58; }
-.gg-module-number { flex: 0 0 22px; color: var(--cp-accent); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 10px; }
-.gg-module-title { display: grid; flex: 1; min-width: 0; gap: 2px; }
-.gg-module-title b { overflow-wrap: anywhere; font-size: 10.5px; font-weight: 650; line-height: 1.35; }
-.gg-module-title small { overflow-wrap: anywhere; color: var(--cp-muted); font-size: 8.5px; line-height: 1.35; text-align: right; }
+.gg-module-number { display: inline-grid; flex: 0 0 28px; place-items: center; height: 28px; border: 1px solid var(--cp-line); border-radius: 8px; background: var(--cp-surface); color: var(--cp-accent); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; font-weight: 700; }
+.gg-module-item[aria-current="step"] .gg-module-number { border-color: transparent; background: var(--cp-accent); color: var(--cp-surface); }
+.gg-module-item.is-done .gg-module-number { border-color: transparent; background: color-mix(in srgb, #16a34a 15%, transparent); color: #15803d; }
+.gg-module-title { display: grid; flex: 1; min-width: 0; gap: 3px; }
+.gg-module-title b { overflow-wrap: break-word; hyphens: auto; font-size: 13px; font-weight: 650; line-height: 1.35; }
+.gg-module-title small { overflow-wrap: anywhere; color: var(--cp-muted); font-size: 11px; line-height: 1.5; }
+.gg-module-title small[dir="rtl"] { font-family: Tahoma, "Segoe UI", Arial, sans-serif; text-align: right; }
+.gg-module-progress { display: block; height: 3px; margin-top: 2px; overflow: hidden; border-radius: 99px; background: var(--cp-line); }
+.gg-module-progress > i { display: block; height: 100%; border-radius: inherit; background: var(--cp-accent); }
 .gg-modules .gg-module-item > svg { flex: 0 0 auto; color: var(--cp-muted); }
-.gg-module-count { display: inline-grid; flex: 0 0 auto; place-items: center; min-width: 25px; height: 20px; padding: 0 5px; border-radius: 99px; background: var(--cp-alt); color: var(--cp-muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 9px; }
+.is-modules-collapsed .gg-modules { padding: 0 5px 8px; scrollbar-width: none; }
+.is-modules-collapsed .gg-modules-head { justify-content: center; margin: 0 -5px 6px; padding: 9px 0; }
+.is-modules-collapsed .gg-modules-head h3,
+.is-modules-collapsed .gg-module-title,
+.is-modules-collapsed .gg-modules .gg-module-item > svg { display: none; }
+.is-modules-collapsed .gg-modules .gg-module-item { justify-content: center; min-height: 38px; padding: 4px; }
 
 .gg-main { min-width: 0; }
 .gg-question, .gg-lesson, .gg-writing, .gg-dictation, .gg-results { padding: 20px; }
@@ -142,14 +159,23 @@
 .gg-section-heading { margin-bottom: 15px; }
 .gg-section-heading h3 { margin: 4px 0 6px; }
 .gg-section-heading > p:last-child { max-width: 75ch; margin: 0; color: var(--cp-muted); font-size: 12px; line-height: 1.8; }
-.gg-lesson-card { display: flex; gap: 13px; padding: 15px 0; border-top: 1px solid var(--cp-line); }
-.gg-lesson-index { flex: 0 0 29px; color: var(--cp-accent); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; }
-.gg-lesson-card > div { min-width: 0; }
-.gg-lesson-card h4 { margin: 0 0 5px; font-size: 14px; }
-.gg-lesson-card p { margin: 0 0 5px; line-height: 1.8; font-size: 12px; }
-.gg-lesson-card .gg-fa-copy { color: var(--cp-muted); font-size: 12px; }
-.gg-lesson-card ul { margin: 5px 0 0; padding-left: 18px; color: var(--cp-muted); font-size: 12px; line-height: 1.8; }
-.gg-callout { display: flex; gap: 9px; margin: 12px 0 16px; padding: 12px; border: 1px solid var(--cp-line); border-radius: 9px; background: var(--cp-selected); }
+.gg-lesson-card { display: grid; gap: 12px; margin-top: 14px; padding: 18px; border: 1px solid var(--cp-line); border-radius: 14px; background: var(--cp-surface); box-shadow: 0 1px 2px rgb(15 23 42 / 5%), 0 6px 18px rgb(15 23 42 / 4%); }
+.gg-lesson-card > * { min-width: 0; }
+.gg-lesson-head { display: flex; align-items: flex-start; gap: 12px; }
+.gg-lesson-index { display: inline-grid; flex: 0 0 34px; place-items: center; height: 34px; border-radius: 10px; background: var(--cp-accent); color: var(--cp-surface); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; font-weight: 800; }
+.gg-lesson-titles { flex: 1; min-width: 0; }
+.gg-lesson-titles h4 { margin: 0; font-size: 16.5px; line-height: 1.5; }
+.gg-lesson-titles h4[dir="rtl"], .gg-lesson-support[dir="rtl"] p, .gg-examples .gg-example-fa[dir="rtl"] { font-family: Tahoma, "Segoe UI", Arial, sans-serif; }
+.gg-lesson-de-title { margin: 1px 0 0; color: var(--cp-muted); font-size: 12px; }
+.gg-lesson-box { padding: 12px 15px; border: 1px solid var(--cp-line); border-radius: 10px; }
+.gg-lesson-box p { margin: 0; font-size: 13.5px; line-height: 1.95; }
+.gg-lesson-support { border-color: color-mix(in srgb, var(--cp-accent) 22%, var(--cp-line)); border-inline-start: 4px solid var(--cp-accent); background: color-mix(in srgb, var(--cp-accent) 6%, var(--cp-surface)); }
+.gg-lesson-support[dir="rtl"] p { font-size: 14px; line-height: 2.1; }
+.gg-lesson-german { border-inline-start: 4px solid #d99a19; background: var(--cp-alt); }
+.gg-box-label { display: block; margin-bottom: 5px; color: var(--cp-accent); font-size: 10.5px; font-weight: 800; letter-spacing: .05em; }
+.gg-lesson-german .gg-box-label { color: #b7791f; text-transform: uppercase; }
+.gg-example-block .gg-box-label { color: var(--cp-muted); text-transform: uppercase; }
+.gg-callout { display: flex; gap: 9px; margin: 16px 0 16px; padding: 12px; border: 1px solid var(--cp-line); border-radius: 9px; background: var(--cp-selected); }
 .gg-callout > svg { flex: 0 0 auto; color: var(--cp-accent); }
 .gg-callout strong { font-size: 12px; }
 .gg-callout p { margin: 4px 0 0; color: var(--cp-muted); font-size: 11px; line-height: 1.8; }
@@ -243,7 +269,8 @@
 .gg-dash-card.is-planned .gg-dash-card-foot { color: var(--cp-muted); }
 
 @media (max-width: 1220px) {
-  .gg-layout { grid-template-columns: 210px minmax(0, 1fr); }
+  .gg-layout { grid-template-columns: 220px minmax(0, 1fr); }
+  .gg-layout.is-modules-collapsed { grid-template-columns: 58px minmax(0, 1fr); }
   .gg-side { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .gg-reset { grid-column: 1 / -1; }
 }
@@ -251,7 +278,7 @@
   .gg-mobile-module { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border: 1px solid var(--cp-line); border-radius: 9px; background: var(--cp-alt); }
   .gg-mobile-module > span { flex: 0 0 auto; color: var(--cp-muted); font-size: 10px; }
   .gg-mobile-module select { flex: 1; min-width: 0; min-height: 44px; padding: 5px 8px; border: 1px solid var(--cp-line); border-radius: 7px; background: var(--cp-surface); color: var(--cp-text); font-size: 16px; }
-  .gg-layout { grid-template-columns: minmax(0, 1fr); }
+  .gg-layout, .gg-layout.is-modules-collapsed { grid-template-columns: minmax(0, 1fr); }
   .gg-main { grid-row: 1; }
   .gg-modules { display: none; }
   .gg-side { grid-row: 2; grid-column: auto; }
@@ -268,6 +295,8 @@
   .gg-tabs button span { font-size: 12px; }
   .gg-tabs button small { display: none; }
   .gg-question, .gg-lesson, .gg-writing, .gg-dictation, .gg-results { padding: 14px; }
+  .gg-lesson-card { padding: 14px; }
+  .gg-examples { grid-template-columns: 1fr; }
   .gg-question-top { display: block; }
   .gg-question-badges { margin-top: 8px; }
   .gg-prompt { padding: 12px; font-size: 16px; }
@@ -323,10 +352,10 @@
 h4.gg-dual-main { font-size: 15px; }
 h4.gg-dual-sub { font-size: 12px; font-weight: 500; }
 .gg-hero-dual { max-width: 75ch; }
-.gg-examples { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
-.gg-examples li { display: grid; gap: 2px; padding: 8px 12px; border-radius: 10px; background: var(--cp-alt); }
-.gg-examples li > span[lang="de"] { font-weight: 600; }
-.gg-examples .gg-example-fa { font-size: .92em; }
+.gg-examples { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.gg-examples li { display: grid; align-content: start; gap: 6px; padding: 10px 12px; border: 1px solid var(--cp-line); border-radius: 10px; background: var(--cp-surface); }
+.gg-examples li > span[lang="de"] { color: var(--cp-text); font-size: 13.5px; font-weight: 650; line-height: 1.55; }
+.gg-examples .gg-example-fa { padding-top: 6px; border-top: 1px dashed var(--cp-line); color: var(--cp-muted); font-size: 12.5px; line-height: 1.8; }
 .gg-explain h4 { margin-bottom: 4px; }
 .gg-lang-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 14px; }
 .gg-lang-label { font-size: 12px; color: var(--cp-muted); margin-inline-end: 4px; }
