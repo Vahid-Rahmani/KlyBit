@@ -35,8 +35,25 @@ const FINITE = [
   "soll", "sollst", "sollen", "sollt", "darf", "darfst", "d\u00fcrfen", "werde", "wirst", "wird", "wurde", "wurden",
   "gehe", "gehst", "geht", "komme", "kommst", "kommt", "mache", "machst", "macht", "arbeite", "arbeitest", "arbeitet",
   "lerne", "lernst", "lernt", "wohne", "wohnst", "wohnt", "brauche", "brauchst", "braucht", "m\u00f6chte", "m\u00f6chtest",
-  "finde", "findest", "findet",
+  "finde", "findest", "findet", "gibt", "liest", "sieht", "spricht", "nimmt", "f\u00e4hrt", "schl\u00e4ft", "isst", "trinkt", "spielt",
+  "kauft", "sagt", "fragt", "bleibt", "steht", "sitzt", "liegt", "lebt", "h\u00f6rt", "schreibt", "denkt", "glaubt", "kennt", "versteht",
+  "hilft", "bringt", "zeigt", "beginnt", "kostet", "lese", "sehe", "spreche", "nehme", "gebe", "fahre", "schlafe", "esse", "trinke", "spiele",
+  "kaufe", "sage", "frage", "bleibe", "stehe", "sitze", "liege", "lebe", "h\u00f6re", "schreibe", "denke", "glaube", "kenne", "verstehe",
 ].join("|");
+
+const MASCULINE = [
+  "freund", "bruder", "vater", "mann", "chef", "kollege", "kunde", "arzt", "lehrer", "hund", "tisch", "computer", "server", "bus", "zug",
+  "bahnhof", "termin", "job", "tag", "monat", "brief", "kaffee", "tee", "drucker", "bildschirm", "kurs", "flughafen", "platz", "weg", "sohn",
+  "onkel", "nachbar", "student", "sch\u00fcler", "apfel", "kuchen", "salat", "film", "urlaub", "wagen", "stuhl", "schrank", "garten",
+  "schl\u00fcssel", "vertrag", "beruf", "laptop", "schalter", "router",
+].join("|");
+const SENTENCE_ADVERBS = [
+  "gestern", "heute", "morgen", "leider", "manchmal", "dann", "danach", "deshalb", "deswegen", "trotzdem", "vielleicht", "jetzt", "oft",
+  "zuerst", "sp\u00e4ter", "fr\u00fcher", "abends", "morgens", "nachmittags", "montags", "dienstags", "mittwochs", "donnerstags", "freitags",
+  "samstags", "sonntags", "pl\u00f6tzlich", "zuletzt", "au\u00dferdem", "schlie\u00dflich", "normalerweise", "nat\u00fcrlich", "wahrscheinlich",
+  "nachher", "vorher", "bald", "endlich",
+].join("|");
+const CLAUSE_CONJ = "obwohl|wenn|weil|als|nachdem|bevor|falls|sobald|solange|seitdem";
 
 /** Unambiguous nouns that learners often write in lower case. Words that are also verb forms (essen, frage, ...) are left out on purpose. */
 const NOUNS = [
@@ -72,6 +89,8 @@ export function checkGerman(text: string): Issue[] {
     const after = text.slice(start + m[0].length);
     // The clause continues (more words before the next punctuation): the finite verb is in the wrong place.
     if (!/^[^.,;:!?\n]{2,}/u.test(after)) continue;
+    // "weil ich arbeite und lerne": coordinated verbs both stay at the end, that is correct.
+    if (/^(und|oder|sowie|bzw|sondern)\b/iu.test(after)) continue;
     const end = start + m[0].length + (after.match(/^[^.,;:!?\n]+/u)?.[0].length ?? 0);
     add({
       rule: "nebensatz-verbende", category: "Satzbau", start, end,
@@ -123,6 +142,98 @@ export function checkGerman(text: string): Issue[] {
         en: `“${m[1]}” always takes the dative: “${m[1]} einem …”.`,
       },
       moduleId: "dativ",
+    });
+  }
+
+
+  // 3b. Case: das/die after a dative-only preposition ("mit das Auto"), article + masculine noun after any preposition.
+  for (const m of text.matchAll(re(`\\b(${DAT_PREP})\\s+(das|die)(?![${LETTER}])`))) {
+    const start = (m.index ?? 0) + m[1].length + 1;
+    const word = m[2];
+    add({
+      rule: "dativ-artikel", category: "Kasus", start, end: start + word.length, replacement: word.toLowerCase() === "das" ? "dem" : undefined,
+      message: {
+        de: `Nach „${m[1]}“ steht immer der Dativ. Der Dativ kennt „${word}“ nicht: dem (m/n), der (f), den (Plural).`,
+        fa: `بعد از «${m[1]}» همیشه Dativ می‌آید و Dativ شکل «${word}» ندارد: dem (مذکر/خنثی)، der (مؤنث)، den (جمع).`,
+        en: `“${m[1]}” always takes the dative, and the dative has no “${word}”: dem (m/n), der (f), den (plural).`,
+      },
+      moduleId: "dativ",
+    });
+  }
+  const PREP_CASE: Record<string, "akk" | "dat" | "both"> = {
+    "für": "akk", ohne: "akk", durch: "akk", gegen: "akk", um: "akk", mit: "dat", nach: "dat", bei: "dat", seit: "dat", von: "dat", zu: "dat", aus: "dat",
+    auf: "both", an: "both", in: "both", "über": "both", unter: "both", vor: "both", hinter: "both", neben: "both", zwischen: "both",
+  };
+  for (const m of text.matchAll(re(`\\b(${Object.keys(PREP_CASE).join("|")})\\s+(ein|kein|mein|dein|sein|unser|euer|der)\\s+(${MASCULINE})(?![${LETTER}])`))) {
+    const prep = m[1].toLowerCase();
+    const kind = PREP_CASE[prep];
+    const article = m[2].toLowerCase();
+    if (article === "der" && kind === "both") continue;      // "auf der Tisch" could be fixed two ways, stay silent
+    const start = (m.index ?? 0) + m[1].length + 1;
+    const fixedArticle = kind === "both" ? undefined : article === "der" ? (kind === "akk" ? "den" : "dem") : article + (kind === "akk" ? "en" : "em");
+    add({
+      rule: "maskulin-kasus", category: "Kasus", start, end: start + m[2].length,
+      replacement: fixedArticle ? (m[2][0] === m[2][0].toUpperCase() ? fixedArticle[0].toUpperCase() + fixedArticle.slice(1) : fixedArticle) : undefined,
+      message: {
+        de: `Nach „${m[1]}“ steht „${m[3]}“ (maskulin) nicht im Nominativ. ${kind === "akk" ? "Akkusativ: den / einen / meinen …" : kind === "dat" ? "Dativ: dem / einem / meinem …" : "Je nach Verb: Akkusativ (einen) oder Dativ (einem)."}`,
+        fa: `بعد از «${m[1]}» کلمهٔ مذکر «${m[3]}» نباید با شکل Nominativ بیاید. ${kind === "akk" ? "Akkusativ: den / einen / meinen" : kind === "dat" ? "Dativ: dem / einem / meinem" : "بسته به فعل: Akkusativ (einen) یا Dativ (einem)"}`,
+        en: `After “${m[1]}” the masculine noun “${m[3]}” cannot take the nominative article. ${kind === "akk" ? "Accusative: den / einen / meinen" : kind === "dat" ? "Dative: dem / einem / meinem" : "Accusative (einen) or dative (einem), depending on the verb."}`,
+      },
+      moduleId: kind === "dat" ? "dativ" : kind === "akk" ? "akkusativ" : "dativ-akkusativ",
+    });
+  }
+  for (const m of text.matchAll(re(`\\b(sprech\\w*|sprich\\w*|red\\w*|denk\\w*|diskutier\\w*)\\s+(über)\\s+(dem|einem|meinem|deinem|seinem|ihrem|unserem)\\b`))) {
+    const start = (m.index ?? 0) + m[1].length + m[2].length + 2;
+    add({
+      rule: "ueber-akkusativ", category: "Kasus", start, end: start + m[3].length,
+      message: {
+        de: `„${m[1]} über“ verlangt den Akkusativ (über das Problem, über einen Plan).`,
+        fa: `«${m[1]} über» همیشه Akkusativ می‌گیرد (über das Problem، über einen Plan).`,
+        en: `“${m[1]} über” takes the accusative (über das Problem, über einen Plan).`,
+      },
+      moduleId: "verben-praepositionen",
+    });
+  }
+
+  // 3c. Word order in main clauses and subordinate-first sentences.
+  for (const m of text.matchAll(re(`(^|[.!?]\\s+)(${SENTENCE_ADVERBS})\\s+(${PRONOUN})\\s+([a-zäöüß]+)\\b`))) {
+    const start = (m.index ?? 0) + m[1].length + m[2].length + 1;
+    const next = m[4].toLowerCase();
+    const swappable = !/^(und|oder|aber|auch|nicht|noch|schon|nur|immer|sehr|gern|gerne|dann|jetzt|hier|dort|nie|oft|wieder|da|so|ja|doch|mal)$/u.test(next);
+    add({
+      rule: "verbzweit", category: "Satzbau", start, end: start + m[3].length + 1 + m[4].length, replacement: swappable ? `${m[4]} ${m[3]}` : undefined,
+      message: {
+        de: `Im Hauptsatz steht das konjugierte Verb auf Position 2: „${m[2]} ${swappable ? m[4] + " " + m[3] : "…"}“. Nach „${m[2]}“ folgt zuerst das Verb, dann das Subjekt.`,
+        fa: `در جملهٔ اصلی فعل صرف‌شده همیشه جایگاه دوم است. بعد از «${m[2]}» ابتدا فعل می‌آید، بعد فاعل.`,
+        en: `In a main clause the conjugated verb is in position 2: after “${m[2]}” the verb comes first, then the subject.`,
+      },
+      moduleId: "satzstellung",
+    });
+  }
+  for (const m of text.matchAll(re(`(^|[.!?]\\s+)(${CLAUSE_CONJ})\\b[^.!?;:,]{3,80},\\s+(${PRONOUN})\\s+(${FINITE})(?![${LETTER}])`))) {
+    const whole = m[0];
+    const tailAt = whole.length - (m[3].length + 1 + m[4].length);
+    const start = (m.index ?? 0) + tailAt;
+    add({
+      rule: "nebensatz-vorn", category: "Satzbau", start, end: start + m[3].length + 1 + m[4].length, replacement: `${m[4]} ${m[3]}`,
+      message: {
+        de: `Steht der Nebensatz („${m[2]} …“) vorn, beginnt der Hauptsatz mit dem Verb: „…, ${m[4]} ${m[3]} …“.`,
+        fa: `وقتی جملهٔ پیرو («${m[2]} …») اول می‌آید، جملهٔ اصلی با فعل شروع می‌شود: «…, ${m[4]} ${m[3]} …».`,
+        en: `When the subordinate clause (“${m[2]} …”) comes first, the main clause starts with the verb: “…, ${m[4]} ${m[3]} …”.`,
+      },
+      moduleId: "nebensaetze",
+    });
+  }
+  for (const m of text.matchAll(re(`\\b(frage|fragt|fragen|weiß|weiss|wissen|sag\\w*)\\s+(?:mich|dich|sich|uns|euch|ich|er|sie|wir|Sie|mir|nicht|ihr)?\\s*(?:nicht)?\\s*,\\s*(wann|wo|wie|warum|wieso|weshalb|wohin|woher)\\s+(ist|sind|war|kommt|geht|gibt|hat|kann|muss|liegt|steht|fährt)\\b`))) {
+    const start = (m.index ?? 0) + m[0].length - m[3].length;
+    add({
+      rule: "indirekte-frage", category: "Satzbau", start, end: start + m[3].length,
+      message: {
+        de: `In der indirekten Frage („${m[2]} …“) steht das Verb am Ende: „…, ${m[2]} der Zug kommt“, nicht „${m[2]} ${m[3]} …“.`,
+        fa: `در سؤال غیرمستقیم («${m[2]} …») فعل آخر جمله می‌آید؛ نه مثل سؤال مستقیم.`,
+        en: `In an indirect question (“${m[2]} …”) the verb goes to the end, not right after the question word.`,
+      },
+      moduleId: "nebensaetze",
     });
   }
 
