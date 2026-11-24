@@ -198,3 +198,11 @@ html[data-theme] .study-app .certpath-header.certpath-header--compact h1 { margi
 .german-hub-card progress::-webkit-progress-bar, .german-summary .german-progress progress::-webkit-progress-bar { background: var(--cp-line); border-radius: 999px; }
 .german-hub-card progress::-webkit-progress-value, .german-summary .german-progress progress::-webkit-progress-value { background: var(--cp-accent); border-radius: 999px; }
 .german-hub-card progress::-moz-progress-bar, .german-summary .german-progress progress::-moz-progress-bar { background: var(--cp-accent); border-radius: 999px; }
+
+/* Explanation-language switch in the header (shared by Grammatik and Schreibwerkstatt). */
+.header-title-row h1 { min-width: 0; }
+.german-support-switch { display: inline-flex; border: 1px solid var(--cp-line); border-radius: 999px; overflow: hidden; background: var(--cp-surface); }
+.german-support-switch button { min-width: 38px; min-height: 30px; padding: 2px 10px; border: 0; background: transparent; color: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+.german-support-switch button + button { border-left: 1px solid var(--cp-line); }
+.german-support-switch button[aria-pressed="true"] { background: var(--cp-accent); color: var(--cp-surface); }
+.german-support-switch button:focus-visible { outline: 2px solid var(--cp-accent); outline-offset: -2px; }

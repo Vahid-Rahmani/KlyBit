@@ -99,6 +99,11 @@ export default function GermanHubPage() {
               <progress max={germanLessons.length} value={it.touched} aria-label="Deutsch für IT Fortschritt" />
               <small>{it.touched} geübt</small>
             </a>
+            <a className="german-hub-card" href="/german/korrektur">
+              <strong>Schreibwerkstatt</strong>
+              <span>Eigene Sätze schreiben, Fehler sofort sehen und verstehen</span>
+              <small lang="fa" dir="rtl">اصلاح خودکار نوشته</small>
+            </a>
             <a className="german-hub-card" href="/german/grammar-cases">
               <strong>Grammatik-Fälle</strong>
               <span>{grammarMissions.length} Missionen · Situation lesen, Satz bauen</span>

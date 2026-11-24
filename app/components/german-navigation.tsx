@@ -1,9 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { ArrowLeft, BookOpen, FolderSearch, Home, Languages, Network } from "lucide-react";
+import { ArrowLeft, BookOpen, FolderSearch, Home, Languages, Network, SpellCheck } from "lucide-react";
 
-export type GermanNavKey = "hub" | "grammatik" | "it" | "grammar-cases" | "satztat";
+export type GermanNavKey = "hub" | "grammatik" | "it" | "grammar-cases" | "satztat" | "korrektur";
 
 type Entry = { key: GermanNavKey | "home"; label: string; href: string; icon: ReactNode; group?: string };
 
@@ -12,7 +12,8 @@ const ENTRIES: Entry[] = [
   { key: "hub", label: "Heute", href: "/german", icon: <Home size={18} /> },
   { key: "grammatik", label: "Grammatik A1–B2", href: "/german/grammatik", icon: <Languages size={18} />, group: "Lernen" },
   { key: "it", label: "Deutsch für IT", href: "/german/it", icon: <BookOpen size={18} /> },
-  { key: "grammar-cases", label: "Grammatik-Fälle", href: "/german/grammar-cases", icon: <FolderSearch size={18} />, group: "Üben" },
+  { key: "korrektur", label: "Schreibwerkstatt", href: "/german/korrektur", icon: <SpellCheck size={18} />, group: "Üben" },
+  { key: "grammar-cases", label: "Grammatik-Fälle", href: "/german/grammar-cases", icon: <FolderSearch size={18} /> },
   { key: "satztat", label: "Netzwerk-Fälle", href: "/german/satztat", icon: <Network size={18} /> },
   { key: "home", label: "Alle Lernpfade", href: "/", icon: <ArrowLeft size={18} />, group: "Mehr" },
 ];
