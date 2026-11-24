@@ -5,7 +5,10 @@
     "gen-075": "Same genitive attribute structure as gen-074 (noun‑noun genitive), only plural vs singular.",
     "gen-081": "Same preposition+genitive structure as gen-077",
     "gen-082": "Same preposition+genitive structure as gen-077",
-    "gen-083": "Same preposition+genitive structure as gen-077"
+    "gen-083": "Same preposition+genitive structure as gen-077",
+    "gen-090": "Same genitive case pattern with 'des + noun' as gen-080",
+    "gen-093": "Same genitive case pattern with 'des + noun' as gen-080",
+    "gen-100": "Same genitive case pattern with 'des + noun' as gen-080"
   },
   "replace": {}
 }
