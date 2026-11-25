@@ -88,6 +88,14 @@
   "l:genitiv:4:ex2": "my neighbor's bicycle",
   "l:genitiv:4:title": "dessen, deren, and the von-replacement form",
   "l:genitiv:intro": "The genitive case expresses possession, belonging, and reference, and it follows key prepositions like wegen, trotz, während, statt, and innerhalb; correct article, adjective, and noun endings are essential.",
+  "l:verben-praepositionen:0:body": "Typical combinations are warten auf, denken an, sich interessieren für, teilnehmen an, sich freuen auf, Angst haben vor and sich erinnern an. The preposition cannot be freely replaced.",
+  "l:verben-praepositionen:0:ex0": "We are waiting for the bus.",
+  "l:verben-praepositionen:0:ex1": "I think of my family.",
+  "l:verben-praepositionen:0:ex2": "She is interested in music.",
+  "l:verben-praepositionen:0:title": "Recognizing Fixed Combinations",
+  "l:verben-praepositionen:1:body": "warten auf, denken an, sich interessieren für and sich erinnern an take the accusative. teilnehmen an, Angst haben vor and sich freuen über take the dative. Learn the preposition and case together.",
+  "l:verben-praepositionen:1:title": "Which Case Goes with It?",
+  "l:verben-praepositionen:intro": "Many verbs have a fixed preposition. This combination must be learned as a unit because the preposition determines the case and often the meaning.",
   "l:wechselpraepositionen:0:body": "When describing a fixed position, the noun after a two-way preposition takes the dative. Typical verbs are sein, bleiben, liegen, stehen, sitzen, and hängen (in a state).",
   "l:wechselpraepositionen:0:ex0": "The book lies on the table.",
   "l:wechselpraepositionen:0:ex1": "The cat sleeps under the sofa.",
@@ -117,6 +125,8 @@
   "m:dativ:title": "Prepositions with Dative",
   "m:genitiv:summary": "This section covers prepositions that require the genitive case, such as wegen, trotz, während, statt, and innerhalb.",
   "m:genitiv:title": "Prepositions with Genitive",
+  "m:verben-praepositionen:summary": "Verbs with fixed prepositions such as warten auf, sich interessieren für, teilnehmen an and their cases.",
+  "m:verben-praepositionen:title": "Verbs with Fixed Prepositions",
   "m:wechselpraepositionen:summary": "The nine two-way prepositions (in, an, auf, unter, über, vor, hinter, neben, zwischen) take the dative for location (Wo?) and the accusative for direction (Wohin?).",
   "m:wechselpraepositionen:title": "Two-way prepositions"
 }
