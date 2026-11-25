@@ -10,7 +10,12 @@
     "gen-093": "Same genitive case pattern with 'des + noun' as gen-080",
     "gen-100": "Same genitive case pattern with 'des + noun' as gen-080",
     "vda-073": "Same dative-accusative pronoun-noun order as vda-062",
-    "vda-098": "Same dative verb structure as vda-084; redundant practice of dative case with verb + dative object."
+    "vda-098": "Same dative verb structure as vda-084; redundant practice of dative case with verb + dative object.",
+    "trv-090": "Same present‑tense separable verb structure as trv-088",
+    "trv-095": "Same perfect‑tense separable verb structure as trv-092",
+    "trv-097": "Same modal‑verb + infinitive separable verb structure as trv-094",
+    "trv-098": "Same present‑tense separable verb structure as trv-088",
+    "trv-099": "Same present‑tense separable verb structure as trv-088"
   },
   "replace": {}
 }
