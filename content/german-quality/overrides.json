@@ -80,6 +80,66 @@
         "fa": "در فاعلی مذکر بعد از یک артиکل نامعین، صفت پایان -er می‌گیرد."
       },
       "reason": "Included a concessive clause and a relative clause, making the nominative adjective ending less obvious."
+    },
+    "b1-q-akkusativ-c-a1": {
+      "id": "b1-q-akkusativ-c-a1-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Weil er seinen Großvater sehr mag, kauft er ein Geschenk ___ Großvater.",
+      "options": [
+        "für meinen",
+        "für mein",
+        "für meinem",
+        "für meiner"
+      ],
+      "correctIndex": 0,
+      "answer": "für meinen",
+      "translationFa": "چون او پدربزرگش را خیلی دوست دارد، او یک هدیه برای پدربزرگ می‌خرد.",
+      "shortExplanation": {
+        "de": "Die richtige Lösung ist „für meinen“, weil nach der Präposition „für“ der Akkusativ steht.",
+        "fa": "پاسخ درست «für meinen» است، چون بعد از حرف اضافه «für» حالت مفعولی (آکوزاتیو) می‌آید."
+      },
+      "reason": "Longer sentence with subordinate clause and less frequent noun 'Großvater' increases processing load."
+    },
+    "b1-q-akkusativ-c-a10": {
+      "id": "b1-q-akkusativ-c-a10-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Obwohl der Verkehr dicht ist, fahren wir ___ die Innenstadt.",
+      "options": [
+        "durch",
+        "für",
+        "gegen",
+        "ohne"
+      ],
+      "correctIndex": 0,
+      "answer": "durch",
+      "translationFa": "با وجود اینکه ترافیک متراکم است، ما از میان مرکز شهر می‌گذریم.",
+      "shortExplanation": {
+        "de": "Die richtige Präposition ist „durch“, da sie eine Bewegung durch einen Raum ausdrückt und den Akkusativ verlangt.",
+        "fa": "پاسخ درست «durch» است، چون این حرف اضافه حرکت از میان را نشان می‌دهد و آکوزاتیو می‌خواهد."
+      },
+      "reason": "Added subordinate clause and less common noun 'Innenstadt' raises difficulty."
+    },
+    "b1-q-akkusativ-c-a11": {
+      "id": "b1-q-akkusativ-c-a11-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Weil er vergesslich ist, kommt er ___ seinen Regenschirm.",
+      "options": [
+        "ohne",
+        "mit",
+        "für",
+        "gegen"
+      ],
+      "correctIndex": 0,
+      "answer": "ohne",
+      "translationFa": "چون او فراموشکار است، او بدون چترش می‌آید.",
+      "shortExplanation": {
+        "de": "Das richtige Wort ist „ohne“, weil es das Fehlen eines Gegenstands anzeigt und den Akkusativ regiert.",
+        "fa": "کلمه درست «ohne» است، چون عدم داشتن چیزی را نشان می‌دهد و آکوزاتیو می‌خواهد."
+      },
+      "reason": "Subordinate clause and abstract adjective 'vergesslich' increase cognitive load."
     }
   }
 }
