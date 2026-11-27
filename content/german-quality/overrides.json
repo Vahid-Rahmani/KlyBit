@@ -20,5 +20,66 @@
     "b1-q-relativsatz-c-r35": "Same prepositional relative clause structure with 'in der' as the other item.",
     "b1-q-schreiben-c-g-s10": "Same genitive preposition structure as the other item; 'anlässlich' is less frequent than 'wegen'."
   },
-  "replace": {}
+  "replace": {
+    "b1-q-adjektive-c-ad1": {
+      "id": "b1-q-adjektive-c-ad1-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Obwohl er oft müde ist, habe ich einen ___ Freund, der mir hilft.",
+      "options": [
+        "gute",
+        "guten",
+        "gutem",
+        "guter"
+      ],
+      "correctIndex": 1,
+      "answer": "guten",
+      "translationFa": "هرچند او اغلب خسته است، من یک دوست خوب دارم که به من کمک می‌کند.",
+      "shortExplanation": {
+        "de": "Die richtige Form ist guten, weil das Adjektiv nach dem unbestimmten Artikel im Akkusativ Maskulin -en erhält.",
+        "fa": "در آکوزاتیو مذکر بعد از یک артиکل نامعین، صفت پایان -en می‌گیرد."
+      },
+      "reason": "Added a subordinate clause and longer sentence context, increasing syntactic complexity."
+    },
+    "b1-q-adjektive-c-ad10": {
+      "id": "b1-q-adjektive-c-ad10-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Seitdem wir umgezogen sind, wohnen wir in ___ Haus, das einen großen Garten hat.",
+      "options": [
+        "einer großen",
+        "ein großes",
+        "einen großen",
+        "einem großen"
+      ],
+      "correctIndex": 3,
+      "answer": "einem großen",
+      "translationFa": "از زمانی که ما نقل مکان کردیم، ما در یک خانه بزرگ زندگی می‌کنیم که یک باغ وسیع دارد.",
+      "shortExplanation": {
+        "de": "Die richtige Form ist einem großen, weil nach der Präposition in mit Dativ das Adjektiv im Neutrum die Endung -en trägt.",
+        "fa": "بعد از حرف اضافه in در داتیو خنثی، صفت با پایان -en ظاهر می‌شود."
+      },
+      "reason": "Extended with a temporal clause and a relative clause, requiring correct dative adjective ending in a longer context."
+    },
+    "b1-q-adjektive-c-ad11": {
+      "id": "b1-q-adjektive-c-ad11-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Obwohl er erst seit kurzem hier ist, gilt er als ein ___ Schüler, der alle Aufgaben löst.",
+      "options": [
+        "guter",
+        "gute",
+        "guten",
+        "gutem"
+      ],
+      "correctIndex": 0,
+      "answer": "guter",
+      "translationFa": "هرچند او از مدتی کوتاه اینجاست، او به عنوان یک دانش‌آموز خوب شناخته می‌شود که تمام وظایف را حل می‌کند.",
+      "shortExplanation": {
+        "de": "Die richtige Form ist guter, weil nach dem unbestimmten Artikel im Nominativ Maskulin das Adjektiv die Endung -er bekommt.",
+        "fa": "در فاعلی مذکر بعد از یک артиکل نامعین، صفت پایان -er می‌گیرد."
+      },
+      "reason": "Included a concessive clause and a relative clause, making the nominative adjective ending less obvious."
+    }
+  }
 }
