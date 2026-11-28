@@ -1,4 +1,205 @@
 {
-  "remove": {},
-  "replace": {}
+  "remove": {
+    "b1-q-dativ-c-g-d1": "Same structure and rule as b1-q-dativ-c-d31, only noun differs",
+    "b1-q-dativ-c-d36": "Same structure 'sprechen mit + Dativ' with different noun only",
+    "gen-075": "Same genitive attribute structure as gen-074 (noun‑noun genitive), only plural vs singular.",
+    "gen-081": "Same preposition+genitive structure as gen-077",
+    "gen-082": "Same preposition+genitive structure as gen-077",
+    "gen-083": "Same preposition+genitive structure as gen-077",
+    "gen-090": "Same genitive case pattern with 'des + noun' as gen-080",
+    "gen-093": "Same genitive case pattern with 'des + noun' as gen-080",
+    "gen-100": "Same genitive case pattern with 'des + noun' as gen-080",
+    "vda-073": "Same dative-accusative pronoun-noun order as vda-062",
+    "vda-098": "Same dative verb structure as vda-084; redundant practice of dative case with verb + dative object.",
+    "trv-090": "Same present‑tense separable verb structure as trv-088",
+    "trv-095": "Same perfect‑tense separable verb structure as trv-092",
+    "trv-097": "Same modal‑verb + infinitive separable verb structure as trv-094",
+    "trv-098": "Same present‑tense separable verb structure as trv-088",
+    "trv-099": "Same present‑tense separable verb structure as trv-088",
+    "daz-095": "Same dass-clause word order pattern as daz-080",
+    "b1-q-relativsatz-c-r35": "Same prepositional relative clause structure with 'in der' as the other item.",
+    "b1-q-schreiben-c-g-s10": "Same genitive preposition structure as the other item; 'anlässlich' is less frequent than 'wegen'."
+  },
+  "replace": {
+    "b1-q-adjektive-c-ad1": {
+      "id": "b1-q-adjektive-c-ad1-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Obwohl er oft müde ist, habe ich einen ___ Freund, der mir hilft.",
+      "options": [
+        "gute",
+        "guten",
+        "gutem",
+        "guter"
+      ],
+      "correctIndex": 1,
+      "answer": "guten",
+      "translationFa": "هرچند او اغلب خسته است، من یک دوست خوب دارم که به من کمک می‌کند.",
+      "shortExplanation": {
+        "de": "Die richtige Form ist guten, weil das Adjektiv nach dem unbestimmten Artikel im Akkusativ Maskulin -en erhält.",
+        "fa": "در آکوزاتیو مذکر بعد از یک артиکل نامعین، صفت پایان -en می‌گیرد."
+      },
+      "reason": "Added a subordinate clause and longer sentence context, increasing syntactic complexity."
+    },
+    "b1-q-adjektive-c-ad10": {
+      "id": "b1-q-adjektive-c-ad10-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Seitdem wir umgezogen sind, wohnen wir in ___ Haus, das einen großen Garten hat.",
+      "options": [
+        "einer großen",
+        "ein großes",
+        "einen großen",
+        "einem großen"
+      ],
+      "correctIndex": 3,
+      "answer": "einem großen",
+      "translationFa": "از زمانی که ما نقل مکان کردیم، ما در یک خانه بزرگ زندگی می‌کنیم که یک باغ وسیع دارد.",
+      "shortExplanation": {
+        "de": "Die richtige Form ist einem großen, weil nach der Präposition in mit Dativ das Adjektiv im Neutrum die Endung -en trägt.",
+        "fa": "بعد از حرف اضافه in در داتیو خنثی، صفت با پایان -en ظاهر می‌شود."
+      },
+      "reason": "Extended with a temporal clause and a relative clause, requiring correct dative adjective ending in a longer context."
+    },
+    "b1-q-adjektive-c-ad11": {
+      "id": "b1-q-adjektive-c-ad11-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Obwohl er erst seit kurzem hier ist, gilt er als ein ___ Schüler, der alle Aufgaben löst.",
+      "options": [
+        "guter",
+        "gute",
+        "guten",
+        "gutem"
+      ],
+      "correctIndex": 0,
+      "answer": "guter",
+      "translationFa": "هرچند او از مدتی کوتاه اینجاست، او به عنوان یک دانش‌آموز خوب شناخته می‌شود که تمام وظایف را حل می‌کند.",
+      "shortExplanation": {
+        "de": "Die richtige Form ist guter, weil nach dem unbestimmten Artikel im Nominativ Maskulin das Adjektiv die Endung -er bekommt.",
+        "fa": "در فاعلی مذکر بعد از یک артиکل نامعین، صفت پایان -er می‌گیرد."
+      },
+      "reason": "Included a concessive clause and a relative clause, making the nominative adjective ending less obvious."
+    },
+    "b1-q-akkusativ-c-a1": {
+      "id": "b1-q-akkusativ-c-a1-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Weil er seinen Großvater sehr mag, kauft er ein Geschenk ___ Großvater.",
+      "options": [
+        "für meinen",
+        "für mein",
+        "für meinem",
+        "für meiner"
+      ],
+      "correctIndex": 0,
+      "answer": "für meinen",
+      "translationFa": "چون او پدربزرگش را خیلی دوست دارد، او یک هدیه برای پدربزرگ می‌خرد.",
+      "shortExplanation": {
+        "de": "Die richtige Lösung ist „für meinen“, weil nach der Präposition „für“ der Akkusativ steht.",
+        "fa": "پاسخ درست «für meinen» است، چون بعد از حرف اضافه «für» حالت مفعولی (آکوزاتیو) می‌آید."
+      },
+      "reason": "Longer sentence with subordinate clause and less frequent noun 'Großvater' increases processing load."
+    },
+    "b1-q-akkusativ-c-a10": {
+      "id": "b1-q-akkusativ-c-a10-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Obwohl der Verkehr dicht ist, fahren wir ___ die Innenstadt.",
+      "options": [
+        "durch",
+        "für",
+        "gegen",
+        "ohne"
+      ],
+      "correctIndex": 0,
+      "answer": "durch",
+      "translationFa": "با وجود اینکه ترافیک متراکم است، ما از میان مرکز شهر می‌گذریم.",
+      "shortExplanation": {
+        "de": "Die richtige Präposition ist „durch“, da sie eine Bewegung durch einen Raum ausdrückt und den Akkusativ verlangt.",
+        "fa": "پاسخ درست «durch» است، چون این حرف اضافه حرکت از میان را نشان می‌دهد و آکوزاتیو می‌خواهد."
+      },
+      "reason": "Added subordinate clause and less common noun 'Innenstadt' raises difficulty."
+    },
+    "b1-q-akkusativ-c-a11": {
+      "id": "b1-q-akkusativ-c-a11-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Weil er vergesslich ist, kommt er ___ seinen Regenschirm.",
+      "options": [
+        "ohne",
+        "mit",
+        "für",
+        "gegen"
+      ],
+      "correctIndex": 0,
+      "answer": "ohne",
+      "translationFa": "چون او فراموشکار است، او بدون چترش می‌آید.",
+      "shortExplanation": {
+        "de": "Das richtige Wort ist „ohne“, weil es das Fehlen eines Gegenstands anzeigt und den Akkusativ regiert.",
+        "fa": "کلمه درست «ohne» است، چون عدم داشتن چیزی را نشان می‌دهد و آکوزاتیو می‌خواهد."
+      },
+      "reason": "Subordinate clause and abstract adjective 'vergesslich' increase cognitive load."
+    },
+    "b1-q-dativ-akkusativ-c-c1": {
+      "id": "b1-q-dativ-akkusativ-c-c1-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Der erfahrene Lehrer, der seit Jahren an der Schule unterrichtet, erklärt ___ Schülern die komplexe Regel.",
+      "options": [
+        "den",
+        "der",
+        "dem",
+        "die"
+      ],
+      "correctIndex": 0,
+      "answer": "den",
+      "translationFa": "معلم با تجربه، که سال‌هاست در مدرسه تدریس می‌کند، قاعده‌ی پیچیده را به دانش‌آموزان توضیح می‌دهد.",
+      "shortExplanation": {
+        "de": "Der richtige Artikel ist „den“, weil „Schülern“ im Dativ Plural steht und der Lehrer die Regel den Schülern erklärt.",
+        "fa": "«den» صحیح است چون «Schülern» در داتیو جمع قرار دارد."
+      },
+      "reason": "Longer sentence with relative clause and plural dative noun increases difficulty."
+    },
+    "b1-q-dativ-akkusativ-c-c10": {
+      "id": "b1-q-dativ-akkusativ-c-c10-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Obwohl ich sehr beschäftigt war, danke ich ___ herzlich für die schnelle Hilfe.",
+      "options": [
+        "dich",
+        "du",
+        "dir",
+        "deiner"
+      ],
+      "correctIndex": 2,
+      "answer": "dir",
+      "translationFa": "هرچند من بسیار مشغول بودم، از تو به‌خاطر کمک سریع صمیمانه تشکر می‌کنم.",
+      "shortExplanation": {
+        "de": "Das richtige Pronomen ist „dir“, weil „danken“ den Dativ verlangt und ich mich für die Hilfe bedanke.",
+        "fa": "ضمیر صحیح «dir» است چون فعل «danken» داتیو می‌خواهد."
+      },
+      "reason": "Subordinate clause and added adverb increase complexity."
+    },
+    "b1-q-dativ-akkusativ-c-c11": {
+      "id": "b1-q-dativ-akkusativ-c-c11-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Trotz der vielen Reparaturen gehört das alte Fahrrad meines Bruders ___ seit Jahren.",
+      "options": [
+        "mich",
+        "mir",
+        "ich",
+        "meiner"
+      ],
+      "correctIndex": 1,
+      "answer": "mir",
+      "translationFa": "با وجود تعمیرات زیاد، دوچرخه‌ی قدیمی برادر من از سال‌ها پیش مال من است.",
+      "shortExplanation": {
+        "de": "Das richtige Pronomen ist „mir“, weil „gehören“ den Dativ regiert und das Fahrrad mir gehört.",
+        "fa": "ضمیر صحیح «mir» است چون فعل «gehören» داتیو می‌خواهد."
+      },
+      "reason": "Added genitive phrase and temporal adverb increase difficulty."
+    }
+  }
 }
