@@ -140,6 +140,66 @@
         "fa": "کلمه درست «ohne» است، چون عدم داشتن چیزی را نشان می‌دهد و آکوزاتیو می‌خواهد."
       },
       "reason": "Subordinate clause and abstract adjective 'vergesslich' increase cognitive load."
+    },
+    "b1-q-dativ-akkusativ-c-c1": {
+      "id": "b1-q-dativ-akkusativ-c-c1-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Der erfahrene Lehrer, der seit Jahren an der Schule unterrichtet, erklärt ___ Schülern die komplexe Regel.",
+      "options": [
+        "den",
+        "der",
+        "dem",
+        "die"
+      ],
+      "correctIndex": 0,
+      "answer": "den",
+      "translationFa": "معلم با تجربه، که سال‌هاست در مدرسه تدریس می‌کند، قاعده‌ی پیچیده را به دانش‌آموزان توضیح می‌دهد.",
+      "shortExplanation": {
+        "de": "Der richtige Artikel ist „den“, weil „Schülern“ im Dativ Plural steht und der Lehrer die Regel den Schülern erklärt.",
+        "fa": "«den» صحیح است چون «Schülern» در داتیو جمع قرار دارد."
+      },
+      "reason": "Longer sentence with relative clause and plural dative noun increases difficulty."
+    },
+    "b1-q-dativ-akkusativ-c-c10": {
+      "id": "b1-q-dativ-akkusativ-c-c10-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Obwohl ich sehr beschäftigt war, danke ich ___ herzlich für die schnelle Hilfe.",
+      "options": [
+        "dich",
+        "du",
+        "dir",
+        "deiner"
+      ],
+      "correctIndex": 2,
+      "answer": "dir",
+      "translationFa": "هرچند من بسیار مشغول بودم، از تو به‌خاطر کمک سریع صمیمانه تشکر می‌کنم.",
+      "shortExplanation": {
+        "de": "Das richtige Pronomen ist „dir“, weil „danken“ den Dativ verlangt und ich mich für die Hilfe bedanke.",
+        "fa": "ضمیر صحیح «dir» است چون فعل «danken» داتیو می‌خواهد."
+      },
+      "reason": "Subordinate clause and added adverb increase complexity."
+    },
+    "b1-q-dativ-akkusativ-c-c11": {
+      "id": "b1-q-dativ-akkusativ-c-c11-r1",
+      "level": "B2",
+      "difficulty": 3,
+      "prompt": "Trotz der vielen Reparaturen gehört das alte Fahrrad meines Bruders ___ seit Jahren.",
+      "options": [
+        "mich",
+        "mir",
+        "ich",
+        "meiner"
+      ],
+      "correctIndex": 1,
+      "answer": "mir",
+      "translationFa": "با وجود تعمیرات زیاد، دوچرخه‌ی قدیمی برادر من از سال‌ها پیش مال من است.",
+      "shortExplanation": {
+        "de": "Das richtige Pronomen ist „mir“, weil „gehören“ den Dativ regiert und das Fahrrad mir gehört.",
+        "fa": "ضمیر صحیح «mir» است چون فعل «gehören» داتیو می‌خواهد."
+      },
+      "reason": "Added genitive phrase and temporal adverb increase difficulty."
     }
   }
 }
